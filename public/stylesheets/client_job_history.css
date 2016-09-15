@@ -1,0 +1,127 @@
+.client-history h1 {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.history-section {
+	font-size: 17px;
+	color: #414345;
+	margin: 10px 0;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	text-decoration: none!important;
+
+}
+
+.history-section div {
+	display: inline-block;
+	border-right: 4px solid #f3f8f9;
+	padding: 3px 10px;
+	background-color: #F2ECF2;
+	
+}
+
+
+.history-section:hover {
+	opacity: 0.75;
+}
+
+.history-section div:first-child {
+	padding: 3px -10px;
+}
+
+.history-section div:last-child {
+	border-right: none;
+}
+
+.job-date {
+	text-align: center;
+	float: left;
+	min-width: 111px;
+}
+
+.job-status {
+	text-align: center;
+	min-width: 95px;
+}
+
+.job-type {
+	width: 190px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-short-description {
+	-webkit-box-flex: 1;
+	    -ms-flex: 1;
+	        flex: 1;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+/*.edit-job-history:hover {
+	background-color: #c5c8c2;
+	-webkit-transition: all 200ms ease-in-out;
+    -moz-transition: all 200ms ease-in-out;
+    -ms-transition: all 200ms ease-in-out;
+    -o-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+}
+
+.history-section a {
+	text-decoration: none;
+}
+
+.history-section a:hover{
+	color: #f3f4f5;
+}
+*/
+
+@media screen and (max-width: 665px) {
+	.job-status {
+		min-width: 30px!important;
+		width: 30px!important;
+		text-align: left;
+}
+
+	.job-status:first-letter {
+		margin-right: 30px;
+	}
+
+	.history-section {
+		font-size: 15px;
+	}
+
+	.history-section div {
+		padding: 2px 8px;
+	}
+
+	.job-date {
+		min-width: 95px;
+	}
+
+	.job-type {
+		width: 140px;
+	}
+
+	.job-short-description {
+		min-width: 100px;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+

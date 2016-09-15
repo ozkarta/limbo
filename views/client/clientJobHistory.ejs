@@ -1,0 +1,36 @@
+<div class="client-history">
+        <div class="container">
+            <h1>Your Jobs History</h1>
+<%
+if(locals.clientPostedJobs!==undefined){
+	for(i=0;i<locals.clientPostedJobs.length;i++){
+        
+
+        var color=''
+        if(locals.clientPostedJobs[i].status=='Active'){
+            color='background-color: #FEBF5A';
+        }
+        if(locals.clientPostedJobs[i].status=='In Progress'){
+            color='background-color: #9FFFCE';
+        }
+        if(locals.clientPostedJobs[i].status=='Finished'){
+            color='background-color: #2BEE1B';
+        }
+        if(locals.clientPostedJobs[i].status=='Disabled'){
+            color='background-color: #FF7F61';
+        }
+		%>
+			<a href="/editJobPost?id=<%=locals.clientPostedJobs[i].jobGUID%>" class="history-section">
+                <!-- <div title="Enter to job"></div> -->
+                <div class="job-date"><%-locals.clientPostedJobs[i].effDate%></div>
+                <div class="job-status" style="<%=color%>"><%-locals.clientPostedJobs[i].status%></div>
+                <div class="job-type"><%-locals.clientPostedJobs[i].jobCategory%></div>
+                <div class="job-short-description"><%-locals.clientPostedJobs[i].jobTitle%></div>
+            </a>  
+
+		<%
+	}
+}
+%>
+        </div>
+</div>

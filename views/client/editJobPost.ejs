@@ -1,0 +1,56 @@
+Edit Job Post
+ 
+
+<%
+	if(locals.jobToEdit!==undefined){
+	console.dir(locals.jobToEdit);
+
+	var status='';
+	if(locals.jobToEdit.status=='Active'){
+	status='checked';
+	}
+
+		%>
+			<form action="/updateJobPost" method="post">
+			    <input type="hidden" name="id" value="<%=locals.jobToEdit.jobGUID%>">
+				<input type="text" name="category" placeholder="category" value="<%=locals.jobToEdit.jobCategory%>">
+				<input type="text" name="title" placeholder="Job Title" value="<%=locals.jobToEdit.jobTitle%>">
+				<input type="text" name="description" placeholder="Job Description" value="<%=locals.jobToEdit.jobDescription%>">
+				<input type="text" name="deadline" placeholder="Deadline" value="<%=locals.jobToEdit.deadLine%>">
+				
+
+				<!-- <div class="well">
+				  <div id="datetimepicker1" class="input-append date">
+				    <input data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
+				    <span class="add-on">
+				      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+				      </i>
+				    </span>
+				  </div>
+				</div> -->
+				
+
+				<input type="text" name="budget" placeholder="Budget" value="<%=locals.jobToEdit.budget%>">
+				<input type="text" name="paymentType" placeholder="Payment Type" value="<%=locals.jobToEdit.paymentType%>">
+				<input type="text" name="projectType" placeholder="Project Type" value="<%=locals.jobToEdit.projectType%>">
+				<div>
+					Enable/Disable
+					<input type="checkbox" checked data-toggle="toggle" name="status"  <%=status%>  onchange="enableDisable(this)">
+				</div>
+				<input type="submit" value="Save">
+			</form>
+
+			<form action="deleteJobPost" method="post">
+			 	<input type="hidden" name="id" value="<%=locals.jobToEdit.jobGUID%>">
+			 	<input type="submit" value="Delete Post">
+			</form>
+
+		<%
+	}
+%>
+
+<script>
+   	function enableDisable(val){
+   		alert('enable/disable');
+   	}
+</script>

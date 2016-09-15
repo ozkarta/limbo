@@ -1,0 +1,37 @@
+<h1>Register Worker</h1>
+
+
+
+<br><input type="radio" name="whoami" value="company" checked> Company</input><br>
+<form method="POST" action="registerWorkerAction">		
+	<input type="text" name="businessname" placeholder="Business Name">
+	<input type="text" name="controlnumber" placeholder="Control Number	">
+	<input type="text" name="businesstype" placeholder="Business Type">
+	<input type="text" name="principalofficeaddress" placeholder="Principal Office Address">
+	<input type="text" name="registrationdate" placeholder="Date of Formation / Registration Date">
+	<input type="text" name="userName" placeholder="User Name">
+	<input type="hidden" name="type" value="worker">
+	<input type="hidden" name="whoami" value="company">
+	<input type="text" name="directorfname" placeholder="Director First Name">
+	<input type="text" name="directorlname" placeholder="Director Last Name">
+	<input type="text" name="email" placeholder="EMAIL">
+	<input type="text" name="password" placeholder="Password" required>
+	<input type="text" name="repassword" placeholder="Type password again" required>
+	
+	<br><input type="submit">
+</form>
+
+<br><input type="radio" name="whoami" value="individual"> Person or group of people</input><br>
+<form method="POST" action="registerWorkerAction">		
+	<input type="text" name="userName" placeholder="User Name" required>
+	<input type="hidden" name="type" value="worker">
+	<input type="hidden" name="whoami" value="individual">
+	<input type="text" name="fname" placeholder="First Name">
+	<input type="text" name="lname" placeholder="Last Name">
+	<input type="text" name="email" placeholder="EMAIL">
+	<input type="text" name="password" placeholder="Password" required>
+	<input type="text" name="repassword" placeholder="Type password again" required>
+
+	<br><input type="submit">
+</form>
+

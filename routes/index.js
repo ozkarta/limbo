@@ -4,6 +4,7 @@ var dbInit=require('../models/DB/initDataBase');
 var dbConfig=require('../models/DB/db');
 var user=require('../models/DB/mongooseModels/users');
 var jobPost=require('../models/DB/mongooseModels/jobPost');
+var jobCategory=require('../models/DB/mongooseModels/jobCategory');
 
 var permition=require('../models/permition');
 
@@ -321,7 +322,12 @@ myRouter=function(app,_passport){
 			localPermition.client=true;
 			localPermition.worker=false;
 
-			renderIfAuthorized(req,res,app,'postJob',localPermition);
+			if(isAuthorized(req,res,app,'postJob',localPermition)){
+				jobCategory.find({},function(err,result){
+					renderIfAuthorized(req,res,app,'postJob',localPermition,{locals:{categories:result}});
+				})
+			}
+			//renderIfAuthorized(req,res,app,'postJob',localPermition);
 
 			//res.render('visitor/registerClient');
 		});
@@ -375,8 +381,11 @@ myRouter=function(app,_passport){
 
 			if(isAuthorized(req,res,app,'clientJobHistory',localPermition)){
 				jobPost.find({ownerGUID:req.user.client.userGUID},function(err,result){
+					if(result){
+						renderIfAuthorized(req,res,app,'clientJobHistory',localPermition,{locals:{clientPostedJobs:result}});
+					}
 					//console.dir(result);
-					renderIfAuthorized(req,res,app,'clientJobHistory',localPermition,{locals:{clientPostedJobs:result}});
+					//renderIfAuthorized(req,res,app,'clientJobHistory',localPermition,{locals:{clientPostedJobs:result}});
 				});
 			}else{
 				renderIfAuthorized(req,res,app,'/',localPermition);
@@ -398,7 +407,15 @@ myRouter=function(app,_passport){
 			if(isAuthorized(req,res,app,'editJobPost',localPermition)){
 				jobPost.findOne({ownerGUID:req.user.client.userGUID,jobGUID:req.query.id},function(err,result){
 					//console.dir(result);
-					renderIfAuthorized(req,res,app,'editJobPost',localPermition,{locals:{jobToEdit:result}});
+					jobCategory.find({},function(err2,result2){
+							if(!err){
+								if(result2){
+									renderIfAuthorized(req,res,app,'editJobPost',localPermition,{locals:{jobToEdit:result,categories:result2}});
+						
+								}
+							}
+						})
+					
 				});
 			}else{
 				renderIfAuthorized(req,res,app,'/',localPermition);

@@ -1,10 +1,10 @@
 var translator=require('./mongooseModels/translator');
-
+var jobCategory=require('./mongooseModels/jobCategory');
 module.exports=function(){
 
 	initTranslator();
 
-
+	initJobCategory();
 
 }
 
@@ -48,7 +48,37 @@ function addValueToTranslator(language,varName,value){
 		}
 	})
 }
+function initJobCategory(){
 
+	jobCategory.remove({},function(err){
+		if(!err){
+			addValueToJobCategory('design');
+			addValueToJobCategory('auto_moto');
+			addValueToJobCategory('music');
+			addValueToJobCategory('information_technologies');
+			addValueToJobCategory('building_constructing');
+			addValueToJobCategory('home_job');
+			addValueToJobCategory('garden_job');
+			addValueToJobCategory('finances');
+			addValueToJobCategory('marketing');
+			addValueToJobCategory('shipping_job');
+			addValueToJobCategory('drinks');
+			addValueToJobCategory('meals');
+			addValueToJobCategory('cooking');
+
+		}
+	})
+	
+}	
+function addValueToJobCategory(categoryVarName){
+	var cat=new jobCategory();
+	cat.categoryGUID=guid();
+	cat.categoryVarName=categoryVarName;
+
+	cat.save(function(err,savedResult){
+		console.log('Category _'+categoryVarName+'_  was added');
+	})
+}
 
 //___________________________________________________--
 

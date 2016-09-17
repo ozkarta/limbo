@@ -1,5 +1,30 @@
 <form method="post" action="postNewJob">
-	<input type="text" name="category" placeholder="category">
+	<!-- <select class="form-control" id="sel1">
+	    <option>1</option>
+	    <option>2</option>
+	    <option>3</option>
+	    <option>4</option>
+	  </select> -->
+
+
+
+	  <%if(locals!==undefined){
+	  	if(locals.categories!==undefined){
+	  		%>
+	  		<select class="form-control" id="sel1" name="category">
+	  		<%
+	  		console.dir(locals.categories);
+	  		for(i=0;i<locals.categories.length;i++){
+	  			%>
+	  				<option value="<%=locals.categories[i].categoryVarName%>"><%=locals.categories[i].categoryVarName%></option>
+	  			<%
+	  		}
+	  		%>
+	  		</select>
+	  		<%
+	  	}
+	  }%>
+	
 	<input type="text" name="title" placeholder="Job Title">
 	<input type="text" name="description" placeholder="Job Description">
 	<input type="text" name="deadline" placeholder="Deadline">

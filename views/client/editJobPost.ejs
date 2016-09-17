@@ -3,7 +3,7 @@ Edit Job Post
 
 <%
 	if(locals.jobToEdit!==undefined){
-	console.dir(locals.jobToEdit);
+	//console.dir(locals.jobToEdit);
 
 	var status='';
 	if(locals.jobToEdit.status=='Active'){
@@ -13,7 +13,32 @@ Edit Job Post
 		%>
 			<form action="/updateJobPost" method="post">
 			    <input type="hidden" name="id" value="<%=locals.jobToEdit.jobGUID%>">
-				<input type="text" name="category" placeholder="category" value="<%=locals.jobToEdit.jobCategory%>">
+				<%if(locals!==undefined){
+					console.dir(locals);
+				  	if(locals.categories!==undefined){
+				  		console.log('!!!!!');
+				  		%>
+				  		<select class="form-control" id="sel1" name="category">
+				  		<%
+				  		
+				  		for(i=0;i<locals.categories.length;i++){
+				  			if(locals.categories[i].categoryVarName===locals.jobToEdit.jobCategory){
+				  			%>
+				  				<option selected value="<%=locals.categories[i].categoryVarName%>"><%=locals.categories[i].categoryVarName%></option>
+				  			<%
+				  			}else{
+				  			%>
+				  				<option value="<%=locals.categories[i].categoryVarName%>"><%=locals.categories[i].categoryVarName%></option>
+				  			<%
+				  			}
+				  		}
+				  		%>
+				  		</select>
+				  		<%
+				  	}
+				  }else{
+				  	console.log('locals  is undefined');
+				  }%>
 				<input type="text" name="title" placeholder="Job Title" value="<%=locals.jobToEdit.jobTitle%>">
 				<input type="text" name="description" placeholder="Job Description" value="<%=locals.jobToEdit.jobDescription%>">
 				<input type="text" name="deadline" placeholder="Deadline" value="<%=locals.jobToEdit.deadLine%>">

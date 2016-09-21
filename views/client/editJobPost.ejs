@@ -1,4 +1,4 @@
-Edit Job Post
+<h1 class="text-center">Edit Job Post</h1>
  
 
 <%
@@ -6,8 +6,11 @@ Edit Job Post
 	//console.dir(locals.jobToEdit);
 
 	var status='';
-	if(locals.jobToEdit.status=='Active'){
-	status='checked';
+	if(locals.jobToEdit.status==='Active'){
+	   status='checked';
+	}
+	if(locals.jobToEdit.status==='Disabled'){
+	   status='';
 	}
 
 		%>
@@ -18,7 +21,9 @@ Edit Job Post
 				  	if(locals.categories!==undefined){
 				  		console.log('!!!!!');
 				  		%>
-				  		<select class="form-control" id="sel1" name="category">
+				  		<div class="form-group">
+				  		<label for="category">Category</label>
+				  		<select class="form-control" id="category" name="category" required="required">
 				  		<%
 				  		
 				  		for(i=0;i<locals.categories.length;i++){
@@ -34,14 +39,25 @@ Edit Job Post
 				  		}
 				  		%>
 				  		</select>
+				  		</div>
 				  		<%
 				  	}
 				  }else{
 				  	console.log('locals  is undefined');
 				  }%>
-				<input type="text" name="title" placeholder="Job Title" value="<%=locals.jobToEdit.jobTitle%>">
-				<input type="text" name="description" placeholder="Job Description" value="<%=locals.jobToEdit.jobDescription%>">
-				<input type="text" name="deadline" placeholder="Deadline" value="<%=locals.jobToEdit.deadLine%>">
+
+				<div class="form-group">
+					<label for="title">Title</label>
+					<input type="text" name="title" id="title" placeholder="Job Title" value="<%=locals.jobToEdit.jobTitle%>" class="form-control"  required="required">
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea rows="5" name="description" id="description" placeholder="Job Description" class="form-control"  required="required"><%=locals.jobToEdit.jobDescription%></textarea>
+				</div>
+				<div class="form-group">
+					<label for="deadline">DeadLine</label>
+					<input type="date" name="deadline" id="deadline" placeholder="Deadline" value="<%=locals.jobToEdit.deadLine%>" class="form-control" >
+				</div>
 				
 
 				<!-- <div class="well">
@@ -54,20 +70,28 @@ Edit Job Post
 				  </div>
 				</div> -->
 				
-
-				<input type="text" name="budget" placeholder="Budget" value="<%=locals.jobToEdit.budget%>">
-				<input type="text" name="paymentType" placeholder="Payment Type" value="<%=locals.jobToEdit.paymentType%>">
-				<input type="text" name="projectType" placeholder="Project Type" value="<%=locals.jobToEdit.projectType%>">
-				<div>
-					Enable/Disable
-					<input type="checkbox" checked data-toggle="toggle" name="status"  <%=status%>  onchange="enableDisable(this)">
+				<div class="form-group">
+					<label for="budget">Budget</label>
+					<input type="text" name="budget" id="budget" placeholder="Budget" value="<%=locals.jobToEdit.budget%>" class="form-control" >
 				</div>
-				<input type="submit" value="Save">
+				<div class="form-group">
+					<label for="paymentType">Payment Type</label>
+					<input type="text" name="paymentType" id="paymentType" placeholder="Payment Type" value="<%=locals.jobToEdit.paymentType%>" class="form-control" >
+				</div>
+				<div class="form-group">
+					<label for="projectType">Project Type</label>
+					<input type="text" name="projectType" id="projectType" placeholder="Project Type" value="<%=locals.jobToEdit.projectType%>" class="form-control" >
+				</div>
+				<div class="form-group">
+					<label for="enabledisable">Enable/Disable Post</label>
+					<input type="checkbox" checked data-toggle="toggle" name="status" id="enabledisable" <%=status%>   class="form-control" >
+				</div>
+				<button type="submit" class="btn btn-default">Save</button>
 			</form>
 
 			<form action="deleteJobPost" method="post">
 			 	<input type="hidden" name="id" value="<%=locals.jobToEdit.jobGUID%>">
-			 	<input type="submit" value="Delete Post">
+			 	<button type="submit" class="btn btn-default">Delete Post</button>
 			</form>
 
 		<%

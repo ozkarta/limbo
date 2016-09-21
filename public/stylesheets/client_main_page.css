@@ -70,7 +70,7 @@ table {
 }
 .client-subscriber-content-list-item{
 	width: 220px;
-	height: 350px;
+	height: 300px;
 }
 .client-subscriber-content-link{
 	text-decoration: none;
@@ -90,7 +90,7 @@ table {
 
 .client-subscriber-content-image img{
 	max-width: 100%;
-	height: 250px;
+	height: 210px;
 }
 
 .client-subscriber-content-content-text h3{

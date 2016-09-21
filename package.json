@@ -27,7 +27,6 @@
     "passport-facebook":"2.1.1",
     "passport-linkedin":"1.0.0",
     "passport-google-oauth":"1.0.0",
-    //"helmet":"2.1.2",
     "bcrypt":"0.8.7"
   }
 }

@@ -1,0 +1,175 @@
+/* CSS Reset --- START*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/*Css Reset --- END*/
+
+
+.client-subscriber-title{
+	text-align:center;
+	font-size: 3rem;
+}
+.client-subscribers-content-container{
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+}
+.client-subscribers-content-list-container{
+	 width: 100%;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+}
+.client-subscriber-content-list-item{
+	width: 220px;
+	height: 350px;
+}
+.client-subscriber-content-link{
+	text-decoration: none;
+	color:#fff;
+	cursor: pointer;
+	height: inherit;
+}
+.client-subscriber-content-link:hover{
+	color: #fff;
+    text-decoration: underline;
+}
+.client-subscriber-content-wrapper{
+	position: relative;
+	background-color: red;
+	height: inherit;
+}
+
+.client-subscriber-content-image img{
+	max-width: 100%;
+	height: 250px;
+}
+
+.client-subscriber-content-content-text h3{
+	text-align: center;
+	color:#fff;
+}
+.client-subscriber-content-content-text h5{
+	color:#fff;
+	position: absolute;
+	padding: 3px;
+	bottom: 0;
+	left: 0;
+}
+.client-subscriber-count{
+	padding: 5px;
+	font-style: italic;
+}
+
+/*Stars --- START */
+
+.client-subscriber-company-stars{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.star-rating {
+  font-size: 0;
+  white-space: nowrap;
+  display: inline-block;
+  width: 110px;
+  height: 22px;
+  overflow: hidden;
+  position: relative;
+  background:url('http://imgh.us/greyStar.svg');
+  background-size: contain;
+}
+.star-rating input {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  display: inline-block;
+  width: 20%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+  position: relative;
+  cursor:pointer;
+}
+.star-rating i {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 20%;
+  z-index: 1;
+  background:url('http://imgh.us/goldenStar.svg');  
+  background-size: contain;
+  cursor:pointer; /*added*/
+}
+.star-rating input:hover + i,
+.star-rating input:checked + i {
+  opacity: 1;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+.star-rating #input2 + i {
+  width: 40%;
+}
+.star-rating #input3 + i {
+  width: 60%;
+}
+.star-rating #input4 + i {
+  width: 80%;
+}
+.star-rating #input5 + i {
+  width: 100%;
+}
+
+/* Stars --- END */

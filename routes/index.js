@@ -180,27 +180,36 @@ myRouter=function(app,_passport){
 		  		//console.dir(req.body.password);
 		  		//console.dir(fResult1);
 
-		  		var passwordHash='';
-		  		if(fResult1.worker.passwordHash!==undefined){
-		  			passwordHash=fResult1.worker.passwordHash;
-		  		}
-		  		if(fResult1.client.passwordHash!==undefined){
-		  			passwordHash=fResult1.client.passwordHash;
-		  		}
-
 		  		if(!err){
 		  			if(fResult1){
-		  				if(bcrypt.compareSync(req.body.password, passwordHash)){
-		  					return done(null,fResult1);
-		  				}else{
-		  					return done(null,null);
-		  				}		  				
-		  			}else{
-		  				return done(null,null);
-		  			}
-		  		}else{
-		  			console.dir(err);
-		  		}
+		  				var passwordHash='';
+				  		if(fResult1.worker.passwordHash!==undefined){
+				  			passwordHash=fResult1.worker.passwordHash;
+				  		}
+				  		if(fResult1.client.passwordHash!==undefined){
+				  			passwordHash=fResult1.client.passwordHash;
+				  		}
+
+				  		if(!err){
+				  			if(fResult1){
+				  				if(bcrypt.compareSync(req.body.password, passwordHash)){
+				  					return done(null,fResult1);
+				  				}else{
+				  					return done(null,null);
+				  				}		  				
+				  			}else{
+				  				return done(null,null);
+				  			}
+				  		}else{
+				  			console.dir(err);
+				  		}
+				  			}else{
+				  				return done(null,null);
+				  			}
+				  		}else{
+				  			return done(null,null);
+				  		}
+		  		
 		  	})
 		  }));
 

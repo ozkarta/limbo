@@ -1,240 +1,364 @@
 <div class="client-subscribers-container">
 	<div class="client-subscriber-title">
-		<h2>Subscribers</h2>
+		<h2>Top Workers by Rating</h2>
 	</div>
 	<div class="client-subscribers-content-container">
 		<ul class="client-subscribers-content-list-container">
-			<li class="client-subscriber-content-list-item">
-				<a href="" class="client-subscriber-content-link">
-				<div class="client-subscriber-content-wrapper">
-					<div class="client-subscriber-content-image">
-						<img src="./images/dreamworks.png">
-					</div>
-					<div class="client-subscriber-content-content-text">
-						<div> 
-							<h3>Dreamworks Ltd</h3>
-						</div>
-						<div class="client-subscriber-company-stars">
-							<div class="star-rating">
-							    <a href="">
-							    	<input type="radio" name="rating" value="1" id='input1'>
-							    	  <i></i>
-							    </a>
+			<%
+				if(locals!==undefined){
+					if(locals.workers!==undefined){
+						var counter=locals.workers.length;
+						if(counter>5){
+							counter=5;
+						}
+						for(i=0;i<counter;i++){
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="2" id='input2' >
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="3" id='input3'>
-							    	  <i></i>
-							    </a>
+							var header='';
+							var subscribers='0';
+							var rating='5';
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="4" id='input4'>
-							    	  <i></i>
-							    </a>
+							if(locals.workers[i].worker.sibscribers!==undefined){
+								subscribers=locals.workers[i].worker.sibscribers;	
+							}
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="5" id='input5'>
-							    	  <i></i>
-							    </a>
-						  	</div>
+							console.dir('whoAmI is '+locals.workers[i].worker.whoAmI);
+							console.log(locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName)
+							console.log(locals.workers[i].worker.businessName);
+							console.log('________________________')
+							//console.dir(locals.workers[i].worker)
+							if(locals.workers[i].worker.whoAmI=='individual'){
+							 	header=locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName;
+							 	//console.log(header);
+							}else{
+								if(locals.workers[i].worker.whoAmI=='company'){
+									header=locals.workers[i].worker.businessName;
+									//console.log(header);
+								}
+							}
 
-						</div>
-						<div class="client-subscriber-count">
-							<h5><span>18</span> Subscribers</h5>
-						</div>
-					</div>
-				</div>
-				</a>
-			</li>
-			<li class="client-subscriber-content-list-item">
-				<a href="" class="client-subscriber-content-link">
-				<div class="client-subscriber-content-wrapper">
-					<div class="client-subscriber-content-image">
-						<img src="./images/dreamworks.png">
-					</div>
-					<div class="client-subscriber-content-content-text">
-						<div> 
-							<h3>Dreamworks Ltd</h3>
-						</div>
-						<div class="client-subscriber-company-stars">
-							<div class="star-rating">
-							    <a href="">
-							    	<input type="radio" name="rating" value="1" id='input1'>
-							    	  <i></i>
-							    </a>
+							console.log('header is  -->'+header);
+							%>
+								<li class="client-subscriber-content-list-item">
+									<a href="/workerProfile?id=<%=locals.workers[i].worker.userGUID%>" class="client-subscriber-content-link">
+									<div class="client-subscriber-content-wrapper">
+										<div class="client-subscriber-content-image">
+											<img src="./images/dreamworks.png">
+										</div>
+										<div class="client-subscriber-content-content-text">
+											<div> 
+												<h3><%=header%></h3>
+											</div>
+											<div class="client-subscriber-company-stars">
+												<div class="star-rating">
+												<%
+													for(j=0;j<5;j++){
+														%>
+															 <a href="">
+														    	<input type="radio" name="rating<%-i%>" value="<%=j+1%>" id='input<%=j+1%>'>
+														    	  <i></i>
+														    </a>
+														<%
+													}
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="2" id='input2' >
-							    	  <i></i>
-							    </a>
+												%>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="3" id='input3'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="4" id='input4'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="5" id='input5'>
-							    	  <i></i>
-							    </a>
-						  	</div>
+											  	</div>
 
-						</div>
-						<div class="client-subscriber-count">
-							<h5><span>18</span> Subscribers</h5>
-						</div>
+											</div>
+											<div class="client-subscriber-count">
+												<h5><span><%=subscribers%></span> Subscribers</h5>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							<%
+						}
+					}
+				}
+			%>
 
-					</div>
-				</div>
-				</a>
-			</li>
-			<li class="client-subscriber-content-list-item">
-				<a href="" class="client-subscriber-content-link">
-				<div class="client-subscriber-content-wrapper">
-					<div class="client-subscriber-content-image">
-						<img src="./images/dreamworks.png">
-					</div>
-					<div class="client-subscriber-content-content-text">
-						<div> 
-							<h3>Dreamworks Ltd</h3>
-						</div>
-						<div class="client-subscriber-company-stars">
-							<div class="star-rating">
-							    <a href="">
-							    	<input type="radio" name="rating" value="1" id='input1'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="2" id='input2' >
-							    	  <i></i>
-							    </a>
+		
+		</ul>
+	</div>
+</div>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="3" id='input3'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="4" id='input4'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="5" id='input5'>
-							    	  <i></i>
-							    </a>
-						  	</div>
 
-						</div>
-						<div class="client-subscriber-count">
-							<h5><span>18</span> Subscribers</h5>
-						</div>
-					</div>
-				</div>
-				</a>
-			</li>
-			<li class="client-subscriber-content-list-item">
-				<a href="" class="client-subscriber-content-link">
-				<div class="client-subscriber-content-wrapper">
-					<div class="client-subscriber-content-image">
-						<img src="./images/dreamworks.png">
-					</div>
-					<div class="client-subscriber-content-content-text">
-						<div> 
-							<h3>Dreamworks Ltd</h3>
-						</div>
-						<div class="client-subscriber-company-stars">
-							<div class="star-rating">
-							    <a href="">
-							    	<input type="radio" name="rating" value="1" id='input1'>
-							    	  <i></i>
-							    </a>
+<div class="client-subscribers-container">
+	<div class="client-subscriber-title">
+		<h2>Your Subsribes</h2>
+	</div>
+	<div class="client-subscribers-content-container">
+		<ul class="client-subscribers-content-list-container">
+			<%
+				if(locals!==undefined){
+					if(locals.workers!==undefined){
+						var counter=locals.workers.length;
+						if(counter>5){
+							counter=5;
+						}
+						for(i=0;i<counter;i++){
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="2" id='input2' >
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="3" id='input3'>
-							    	  <i></i>
-							    </a>
+							var header='';
+							var subscribers='0';
+							var rating='5';
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="4" id='input4'>
-							    	  <i></i>
-							    </a>
+							if(locals.workers[i].worker.sibscribers!==undefined){
+								subscribers=locals.workers[i].worker.sibscribers;	
+							}
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="5" id='input5'>
-							    	  <i></i>
-							    </a>
-						  	</div>
+							console.dir('whoAmI is '+locals.workers[i].worker.whoAmI);
+							console.log(locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName)
+							console.log(locals.workers[i].worker.businessName);
+							console.log('________________________')
+							//console.dir(locals.workers[i].worker)
+							if(locals.workers[i].worker.whoAmI=='individual'){
+							 	header=locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName;
+							 	//console.log(header);
+							}else{
+								if(locals.workers[i].worker.whoAmI=='company'){
+									header=locals.workers[i].worker.businessName;
+									//console.log(header);
+								}
+							}
 
-						</div>
-						<div class="client-subscriber-count">
-							<h5><span>18</span> Subscribers</h5>
-						</div>
-					</div>
-				</div>
-				</a>
-			</li>
-			<li class="client-subscriber-content-list-item">
-				<a href="" class="client-subscriber-content-link">
-				<div class="client-subscriber-content-wrapper">
-					<div class="client-subscriber-content-image">
-						<img src="./images/dreamworks.png">
-					</div>
-					<div class="client-subscriber-content-content-text">
-						<div> 
-							<h3>Dreamworks Ltd</h3>
-						</div>
-						<div class="client-subscriber-company-stars">
-							<div class="star-rating">
-							    <a href="">
-							    	<input type="radio" name="rating" value="1" id='input1'>
-							    	  <i></i>
-							    </a>
+							console.log('header is  -->'+header);
+							%>
+								<li class="client-subscriber-content-list-item">
+									<a href="" class="client-subscriber-content-link">
+									<div class="client-subscriber-content-wrapper">
+										<div class="client-subscriber-content-image">
+											<img src="./images/dreamworks.png">
+										</div>
+										<div class="client-subscriber-content-content-text">
+											<div> 
+												<h3><%=header%></h3>
+											</div>
+											<div class="client-subscriber-company-stars">
+												<div class="star-rating">
+												<%
+													for(j=0;j<5;j++){
+														%>
+															 <a href="">
+														    	<input type="radio" name="rating<%-i%>" value="<%=j+1%>" id='input<%=j+1%>'>
+														    	  <i></i>
+														    </a>
+														<%
+													}
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="2" id='input2' >
-							    	  <i></i>
-							    </a>
+												%>
+											  	</div>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="3" id='input3'>
-							    	  <i></i>
-							    </a>
+											</div>
+											<div class="client-subscriber-count">
+												<h5><span><%=subscribers%></span> Subscribers</h5>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							<%
+						}
+					}
+				}
+			%>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="4" id='input4'>
-							    	  <i></i>
-							    </a>
 
-							    <a href="">
-							    	<input type="radio" name="rating" value="5" id='input5'>
-							    	  <i></i>
-							    </a>
-						  	</div>
+	
+		</ul>
+	</div>
+</div>
 
-						</div>
-						<div class="client-subscriber-count">
-							<h5><span>18</span> Subscribers</h5>
-						</div>
-					</div>
-				</div>
-				</a>
-			</li>
+
+
+
+
+
+<div class="client-subscribers-container">
+	<div class="client-subscriber-title">
+		<h2>Companies Who  subscribed you</h2>
+	</div>
+	<div class="client-subscribers-content-container">
+		<ul class="client-subscribers-content-list-container">
+			<%
+				if(locals!==undefined){
+					if(locals.workers!==undefined){
+						var counter=locals.workers.length;
+						if(counter>5){
+							counter=5;
+						}
+						for(i=0;i<counter;i++){
+
+
+							var header='';
+							var subscribers='0';
+							var rating='5';
+
+							if(locals.workers[i].worker.sibscribers!==undefined){
+								subscribers=locals.workers[i].worker.sibscribers;	
+							}
+
+							console.dir('whoAmI is '+locals.workers[i].worker.whoAmI);
+							console.log(locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName)
+							console.log(locals.workers[i].worker.businessName);
+							console.log('________________________')
+							//console.dir(locals.workers[i].worker)
+							if(locals.workers[i].worker.whoAmI=='individual'){
+							 	header=locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName;
+							 	//console.log(header);
+							}else{
+								if(locals.workers[i].worker.whoAmI=='company'){
+									header=locals.workers[i].worker.businessName;
+									//console.log(header);
+								}
+							}
+
+							console.log('header is  -->'+header);
+							%>
+								<li class="client-subscriber-content-list-item">
+									<a href="" class="client-subscriber-content-link">
+									<div class="client-subscriber-content-wrapper">
+										<div class="client-subscriber-content-image">
+											<img src="./images/dreamworks.png">
+										</div>
+										<div class="client-subscriber-content-content-text">
+											<div> 
+												<h3><%=header%></h3>
+											</div>
+											<div class="client-subscriber-company-stars">
+												<div class="star-rating">
+												<%
+													for(j=0;j<5;j++){
+														%>
+															 <a href="">
+														    	<input type="radio" name="rating<%-i%>" value="<%=j+1%>" id='input<%=j+1%>'>
+														    	  <i></i>
+														    </a>
+														<%
+													}
+
+												%>
+
+
+
+											
+											  	</div>
+
+											</div>
+											<div class="client-subscriber-count">
+												<h5><span><%=subscribers%></span> Subscribers</h5>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							<%
+						}
+					}
+				}
+			%>
+
+
+		
+		</ul>
+	</div>
+</div>
+
+
+
+<div class="client-subscribers-container">
+	<div class="client-subscriber-title">
+		<h2>Recently Posted Jobs</h2>
+	</div>
+	<div class="client-subscribers-content-container">
+		<ul class="client-subscribers-content-list-container">
+			<%
+				if(locals!==undefined){
+					if(locals.workers!==undefined){
+						var counter=locals.workers.length;
+						if(counter>5){
+							counter=5;
+						}
+						for(i=0;i<counter;i++){
+
+
+							var header='';
+							var subscribers='0';
+							var rating='5';
+
+							if(locals.workers[i].worker.sibscribers!==undefined){
+								subscribers=locals.workers[i].worker.sibscribers;	
+							}
+
+							console.dir('whoAmI is '+locals.workers[i].worker.whoAmI);
+							console.log(locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName)
+							console.log(locals.workers[i].worker.businessName);
+							console.log('________________________')
+							//console.dir(locals.workers[i].worker)
+							if(locals.workers[i].worker.whoAmI=='individual'){
+							 	header=locals.workers[i].worker.fName+' '+locals.workers[i].worker.lName;
+							 	//console.log(header);
+							}else{
+								if(locals.workers[i].worker.whoAmI=='company'){
+									header=locals.workers[i].worker.businessName;
+									//console.log(header);
+								}
+							}
+
+							console.log('header is  -->'+header);
+							%>
+								<li class="client-subscriber-content-list-item">
+									<a href="" class="client-subscriber-content-link">
+									<div class="client-subscriber-content-wrapper">
+										<div class="client-subscriber-content-image">
+											<img src="./images/dreamworks.png">
+										</div>
+										<div class="client-subscriber-content-content-text">
+											<div> 
+												<h3><%=header%></h3>
+											</div>
+											<div class="client-subscriber-company-stars">
+												<div class="star-rating">
+												<%
+													for(j=0;j<5;j++){
+														%>
+															 <a href="">
+														    	<input type="radio" name="rating<%-i%>" value="<%=j+1%>" id='input<%=j+1%>'>
+														    	  <i></i>
+														    </a>
+														<%
+													}
+
+												%>
+
+
+
+											
+											  	</div>
+
+											</div>
+											<div class="client-subscriber-count">
+												<h5><span><%=subscribers%></span> Subscribers</h5>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							<%
+						}
+					}
+				}
+			%>
+
+
+		
 		</ul>
 	</div>
 </div>

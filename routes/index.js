@@ -50,7 +50,7 @@ myRouter=function(app,_passport){
 		  },
 		  function(req,username, password, done) {
 		  	//console.log('___________________________----')
-		  	//console.dir(req.body);
+		  	console.dir(req.body);
 		    user.findOne({ 'worker.userName': username }, function (err, userResult) {
 		     
 		    	if(!err){
@@ -174,11 +174,11 @@ myRouter=function(app,_passport){
 		    passReqToCallback : true // allows us to pass back the entire request to the callback
 		  },
 		  function(req,username, password, done) {
-		  	//console.dir(req.body);
+		  	console.dir(req.body);
 		  	user.findOne({$or:[{'worker.userName':req.body.userName},{'client.userName':req.body.userName}]},function(err,fResult1){
 		  		
 		  		//console.dir(req.body.password);
-		  		//console.dir(fResult1);
+		  		console.dir(fResult1);
 
 		  		if(!err){
 		  			if(fResult1){
@@ -193,6 +193,7 @@ myRouter=function(app,_passport){
 				  		if(!err){
 				  			if(fResult1){
 				  				if(bcrypt.compareSync(req.body.password, passwordHash)){
+				  					console.log('success  !!!!!!!!!!!');
 				  					return done(null,fResult1);
 				  				}else{
 				  					return done(null,null);
@@ -227,8 +228,27 @@ myRouter=function(app,_passport){
 			localPermition.client=true;
 			localPermition.worker=true;
 
-			renderIfAuthorized(req,res,app,'index',localPermition);
+			//renderIfAuthorized(req,res,app,'index',localPermition);
 
+
+			if(req.isAuthenticated()){
+				if(req.user.client.userGUID!==undefined){
+					//console.dir(user);
+					user.find({'worker.userGUID':{$ne:null}},function(err,workerResult){
+						if(!err){
+							if(workerResult){
+								//console.dir(workerResult.length);
+								renderIfAuthorized(req,res,app,'index',localPermition,{locals:{workers:workerResult}});
+							}
+						}						
+					})
+				}
+				if(req.user.worker.userGUID!==undefined){
+					renderIfAuthorized(req,res,app,'index',localPermition);
+				}
+			}else{
+				renderIfAuthorized(req,res,app,'index',localPermition);
+			}
 			//res.render('visitor/index');
 		})
 
@@ -487,6 +507,86 @@ myRouter=function(app,_passport){
 
 			//res.render('visitor/registerClient');
 		});
+
+		this.router.post('/updateJobPost',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=false;
+
+
+			if(isAuthorized(req,res,app,'clientJobHistory',localPermition)){
+				
+
+			}else{
+				renderIfAuthorized(req,res,app,'/',localPermition);
+			}
+			
+
+			
+
+			//res.render('visitor/registerClient');
+		});
+
+		this.router.get('/messages',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=false;
+
+			renderIfAuthorized(req,res,app,'messageBox',localPermition);
+
+			//res.render('visitor/signUpQueue');
+		});
+
+
+		this.router.get('/workerProfile',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=false;
+
+			var workerID=req.query.id;
+
+			
+
+			
+
+			if(isAuthorized(req,res,app,'workerProfile',localPermition)){
+				user.findOne({'worker.userGUID':workerID},function(err,workerResult){
+					if(!err){
+						if(workerResult){
+							renderIfAuthorized(req,res,app,'worker',localPermition,{locals:{worker:workerResult}});
+						}
+					}
+				});
+			}else{
+				renderIfAuthorized(req,res,app,'error',localPermition);
+			}
+			//res.render('visitor/signUpQueue');
+		});
+		this.router.get('/account',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=true;
+
+			renderIfAuthorized(req,res,app,'account',localPermition);
+
+			//res.render('visitor/signUpQueue');
+		});
+
+		this.router.get('/settings',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=false;
+
+			renderIfAuthorized(req,res,app,'settings',localPermition);
+
+			//res.render('visitor/signUpQueue');
+		});
+
 }
 function renderIfAuthorized(req,res,app,view,permition,locals){
 	//console.dir(locals);

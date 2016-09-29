@@ -14,10 +14,18 @@ module.exports=mongoose.model('users',{
 	    controlNumber			:String,
 	    businessType			:String,
 	    principalOfficeAddress	:String,
-	    registrationDate		:String,
+	    registrationDate		:String,			//  Company Registration Date 
+
+	    aboutCompany			:String,
+	    mission					:String,
+	    vission					:String,
+
+	    services				:[],
+	    portfolio				:[],
 
 		userName				:String,
 		email 					:String,
+		contactPhone			:String,
 		fName					:String,
 		lName					:String,
 
@@ -30,6 +38,9 @@ module.exports=mongoose.model('users',{
 		passwordHistory			:[],			//  effdate, passwordHash,hash,  
 
 		userRole				:String,
+
+		subscribers			    :[],
+		subscribes 		    	:[]
 	},
 	client:{
 		userGUID				:String,
@@ -51,6 +62,9 @@ module.exports=mongoose.model('users',{
 		passwordHistory			:[],			//  effdate, passwordHash,hash,  
 
 		userRole				:String,
+
+		subscribers			    :[],
+		subscribers 		    :[]
 	},
 	admin:{
 		userGUID				:String,

@@ -1,0 +1,99 @@
+
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 1500px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;}
+    }
+
+    .hidden {
+     display:none;
+}
+
+  </style>
+
+<div class="container-fluid" >
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <p>Your Account</p>
+      <div class="nav">
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active"><a href="#section1" >Home</a></li>
+          <li><a href="#section2" >Friends</a></li>
+          <li><a href="#section3" >Family</a></li>
+          <li><a href="#section4" ">Photos</a></li>
+          <li><a href="#section5" ">Section5</a></li>          
+        </ul><br>
+      </div>
+      <div class="input-group hidden">
+        <input type="text" class="form-control" placeholder="Search Blog..">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="section1">
+        <form>
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+        </form>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="section2">
+      section2
+    </div>
+
+    <div class="col-sm-9 tab-content" id="section3">
+      section3
+    </div>
+
+    <div class="col-sm-9 tab-content" id="section4">
+      section4
+    </div>
+
+    <div class="col-sm-9 tab-content" id="section5">
+      section5
+    </div>
+
+
+  </div>
+</div>
+
+<script>
+ $(document).ready(function () {
+    $('.nav ul li:first').addClass('active');
+    $('.tab-content:not(:first)').hide();
+    $('.nav ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+    });
+});
+</script>

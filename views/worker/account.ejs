@@ -1,0 +1,306 @@
+
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 100%}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;}
+    }
+
+    .hidden {
+     display:none;
+}
+
+  </style>
+
+<div class="container-fluid" >
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <p>Your Account</p>
+      <div class="nav">
+        <div class="taboz">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a href="#generalInfo" >General Information</a></li>
+            <li><a href="#companyInfo" >Company/Personal Information</a></li>
+            <li><a href="#individualInfo" >Individual Information</a></li>
+            <li><a href="#portfolio" >Posrfolio</a></li>
+            <li><a href="#manageWorkers" >Manage Workers</a></li>
+            <li><a href="#upgrade" >Upgrade to Company</a></li>
+            <li><a href="#downgrade" >Downgrade to Individual</a></li>
+            <li><a href="#address" >Address</a></li>
+            <li><a href="#assotiation" >Assotiate profile</a></li>
+            <li><a href="#passwordChange" ">Change Password</a></li>
+            <li><a href="#deactivation" ">Deactivate Profile</a></li>          
+          </ul><br>
+        </div>
+      </div>
+      <div class="input-group hidden">
+        <input type="text" class="form-control" placeholder="Search Blog..">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+
+    <div class="col-sm-9 tab-content" id="generalInfo" >
+        <form id="formsid">
+              
+              <div class="form-group">
+                      <label for="clientProfileImage">Upload Profile Logo</label>
+                      <input type='file' onchange="readURL(this);" id="inputFile" name="clientProfileImage"/>
+                      <input type="button" name="" id="clearImage" onclick="removeImage()" value="Remove" style="display:none">
+                      <img id="blah" src="#" alt="your image" style="Display: none"/>
+               </div>
+
+
+                <div class="form-group">
+                  <label for="aboutyou">About You</label>
+                  <input type="text" name="aboutyou" id="aboutyou" placeholder="Job Title" class="form-control" required="required">
+                </div>
+
+               <div class="form-group">
+                  <label for="mission">Mission</label>
+                  <input type="text" name="mission" id="mission" placeholder="Job Title" class="form-control" required="required">
+                </div>
+
+                <div class="form-group">
+                  <label for="vission">Vission</label>
+                  <input type="text" name="vission" id="vission" placeholder="Job Title" class="form-control" required="required">
+                </div>
+
+                 <div class="form-group">
+                  <label for="services">Add services you offer and press enter</label>
+                  <br>
+                  <input type="text" name="services" id="services" placeholder="" class="form-control" required="required" data-role="tagsinput">
+                </div>
+
+                <div class="form-group">
+                  <button type="submit" class="btn btn-default" >Save Changes</button>
+                </div>
+
+ 
+
+        </form>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="individualInfo">
+        individual information
+    </div>
+    <div class="col-sm-9 tab-content" id="upgrade">
+        upgrade
+    </div>
+    <div class="col-sm-9 tab-content" id="downgrade">
+        downgrade
+    </div>
+
+    <div class="col-sm-9 tab-content" id="portfolio">
+        portfolio
+    </div>
+
+    <div class="col-sm-9 tab-content" id="manageWorkers">
+        manage workers
+    </div>
+
+    <div class="col-sm-9 tab-content" id="companyInfo">
+        <form>
+
+            
+
+            <div class="form-group">
+              <label for="title">Business Name</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Control Number</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Business Type</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Principal Office Address</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Company Registration Date</label>
+              <input type="text" name="title" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+            
+        </form>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="address">
+
+            <div class="form-group">
+              <label for="title">Default Language For Account</label>
+              <input type="text" name="email" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Country</label>
+              <input type="text" name="email" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">City</label>
+              <input type="text" name="email" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <label for="title">Address 1</label>
+              <input type="text" name="email" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+
+            <div class="form-group">
+              <label for="title">Address 2</label>
+              <input type="text" name="email" id="title" placeholder="Job Title" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">Save Changes</button>
+            </div>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="assotiation">
+            <div class="form-group">
+              <h3>You can  link  your  profile  to  listed Social Network Applications listed below,So  your  Log In  will  be  easier, UserName+Password authentication will be also accessible</h3>
+            </div>
+            <div class="form-group">
+                  <a href="assosiateFacebook">Assosiate your  profile  with facebook</a>
+            </div>
+            <div class="form-group">
+                  <a href="assosiateGoogle">Assosiate your  profile  with Google</a>
+            </div>
+            <div class="form-group">
+                  <a href="assosiateLinkedin">Assosiate your  profile  with Linkedin</a>
+            </div>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="passwordChange">
+      <form>
+           <div class="form-group">
+              <label for="oldPassword">Old Password</label>
+              <input type="password" name="oldPassword" id="title" placeholder="Old Password" class="form-control" required="required">
+            </div>
+
+             <div class="form-group">
+              <label for="newPass1">New Password</label>
+              <input type="password" name="newPass1" id="title" placeholder="New Password" class="form-control" required="required">
+            </div>
+             <div class="form-group">
+              <label for="newPass2">Type new password again</label>
+              <input type="password" name="newPass2" id="title" placeholder="Type new password again" class="form-control" required="required">
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">Save  Password</button>
+            </div>
+
+      </form>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="deactivation">
+        <form action="sendDeactivationLinkToMail" method="POST">
+
+          <div class="form-group">
+                  <h1>!!!Notice!!! Confirmation link  will be send to your email address (asd@mail.com) .Afted clicking  the link  your profile will be  deactivated. If you  change your mind  you can  Sign In  anytime and Your  profile will be activated again .</h1>
+          </div>
+
+          <div class="form-group">
+              <label for="deactivationReasone">Please provide the reasone why  you want to deactivate your profile</label>
+              <input type="text" name="deactivationReasone" id="deactivationReasone" placeholder="" class="form-control" required="required">
+           </div>
+           
+           <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" name="password" id="password" placeholder="" class="form-control" required="required">
+           </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">Send DEACTIVATION Link  to my email</button>
+            </div>
+      </form>
+    </div>
+
+
+        
+
+  </div>
+</div>
+
+<script>
+ $(document).ready(function () {
+    $('.taboz ul li:first').addClass('active');
+    $('.tab-content:not(:first)').hide();
+    $('.taboz ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+    });
+});
+</script>
+
+
+<script>
+function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(450)
+                    .height(300)
+                    .show(true);
+
+                $('#clearImage').show();
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+function removeImage(){
+    $('#inputFile').val('');
+    $('#blah').hide();
+    $('#clearImage').hide();
+}
+
+function submitForm(){
+  
+  $('#formsid').submit();
+}
+
+
+</script>
+

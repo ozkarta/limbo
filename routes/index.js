@@ -5,6 +5,8 @@ var dbConfig=require('../models/DB/db');
 var user=require('../models/DB/mongooseModels/users');
 var jobPost=require('../models/DB/mongooseModels/jobPost');
 var jobCategory=require('../models/DB/mongooseModels/jobCategory');
+var offer=require('../models/DB/mongooseModels/offers');
+var proposal=require('../models/DB/mongooseModels/proposals');
 
 var permition=require('../models/permition');
 
@@ -244,7 +246,15 @@ myRouter=function(app,_passport){
 					})
 				}
 				if(req.user.worker.userGUID!==undefined){
-					renderIfAuthorized(req,res,app,'index',localPermition);
+					jobPost.find({},function(err,jobsResult){
+						if(!err){
+							if(jobsResult){
+								renderIfAuthorized(req,res,app,'index',localPermition,{locals:{defaultJobs:jobsResult}});
+							}
+						}
+					})
+
+					
 				}
 			}else{
 				renderIfAuthorized(req,res,app,'index',localPermition);
@@ -542,9 +552,9 @@ myRouter=function(app,_passport){
 
 		this.router.get('/workerProfile',function(req,res,next){	
 			var localPermition=new permition();
-			localPermition.visitor=false;
+			localPermition.visitor=true;
 			localPermition.client=true;
-			localPermition.worker=false;
+			localPermition.worker=true;
 
 			var workerID=req.query.id;
 
@@ -565,13 +575,14 @@ myRouter=function(app,_passport){
 			}
 			//res.render('visitor/signUpQueue');
 		});
+
 		this.router.get('/account',function(req,res,next){	
 			var localPermition=new permition();
 			localPermition.visitor=false;
 			localPermition.client=true;
 			localPermition.worker=true;
 
-			renderIfAuthorized(req,res,app,'account',localPermition);
+			renderIfAuthorized(req,res,app,'account',localPermition,{locals:{user:req.user}});
 
 			//res.render('visitor/signUpQueue');
 		});
@@ -585,6 +596,388 @@ myRouter=function(app,_passport){
 			renderIfAuthorized(req,res,app,'settings',localPermition);
 
 			//res.render('visitor/signUpQueue');
+		});
+
+
+		this.router.post('/updateGeneralInformation',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+			//renderIfAuthorized(req,res,app,'settings',localPermition);
+
+			//res.render('visitor/signUpQueue');
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+				//console.dir(req.body);
+
+
+				user.findOne({'worker.userGUID':req.user.worker.userGUID},function(err,workerResult){
+					if(!err){
+						if(workerResult){
+							workerResult.worker.aboutCompany=req.body.aboutyou;
+							workerResult.worker.mission=req.body.mission;
+							workerResult.worker.vission=req.body.vission;
+
+
+							workerResult.save(function(err,result){
+								if(!err){
+									res.redirect('/account');
+								}else{
+									res.redirect('/');
+								}
+							})
+						}else{
+							console.log('No Such User Found!!!');
+							res.redirect('/');
+						}
+					}else{
+						console.dir(err);
+						res.redirect('/');
+					}
+				});
+
+
+
+				
+			}else{
+				renderIfAuthorized(req,res,app,'/',localPermition);
+			}
+		});
+
+		this.router.post('/updateContactInformation',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+			//renderIfAuthorized(req,res,app,'settings',localPermition);
+
+			//res.render('visitor/signUpQueue');
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+				//console.dir(req.body);
+
+
+				user.findOne({'worker.userGUID':req.user.worker.userGUID},function(err,workerResult){
+					if(!err){
+						if(workerResult){
+							workerResult.worker.contactAddress=req.body.contactAddress;
+							workerResult.worker.contactEmail=req.body.contactEmail;
+							workerResult.worker.contactPhoneNumber=req.body.contactPhoneNumber;
+
+
+							workerResult.save(function(err,result){
+								if(!err){
+									res.redirect('/account');
+								}else{
+									res.redirect('/');
+								}
+							})
+						}else{
+							console.log('No Such User Found!!!');
+							res.redirect('/');
+						}
+					}else{
+						console.dir(err);
+						res.redirect('/');
+					}
+				});
+
+
+
+				
+			}else{
+				renderIfAuthorized(req,res,app,'/',localPermition);
+			}
+		});
+
+		this.router.post('/updateOffers',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+
+			console.dir(req.body);
+			//renderIfAuthorized(req,res,app,'settings',localPermition);
+
+			//res.render('visitor/signUpQueue');
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+				//console.dir(req.body);
+
+				var offers=[];
+
+				user.findOne({'worker.userGUID':req.user.worker.userGUID},function(err,workerResult){
+					if(!err){
+						if(workerResult){
+							workerResult.worker.services=[];
+
+							if(req.body.offer1!==''){
+
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer1;
+								off.offerGlyphName=req.body.offerGlyph1;
+
+								workerResult.worker.services.push(off);
+								
+							}
+							
+
+							if(req.body.offer2!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer2;
+								off.offerGlyphName=req.body.offerGlyph2;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer3!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer3;
+								off.offerGlyphName=req.body.offerGlyph3;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer4!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer4;
+								off.offerGlyphName=req.body.offerGlyph4;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer5!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer5;
+								off.offerGlyphName=req.body.offerGlyph5;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer6!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer6;
+								off.offerGlyphName=req.body.offerGlyph6;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer7!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer7;
+								off.offerGlyphName=req.body.offerGlyph7;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer8!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer8;
+								off.offerGlyphName=req.body.offerGlyph8;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+							if(req.body.offer9!==''){
+								
+								var off=new offer();
+								off.offerGUID=guid();
+								off.offer=req.body.offer9;
+								off.offerGlyphName=req.body.offerGlyph9;
+								
+								workerResult.worker.services.push(off);
+							}
+							
+
+
+
+							workerResult.save(function(err,result){
+								if(!err){
+									res.redirect('/account');
+								}else{
+									res.redirect('/');
+								}
+							})
+						}else{
+							console.log('No Such User Found!!!');
+							res.redirect('/');
+						}
+					}else{
+						console.dir(err);
+						res.redirect('/');
+					}
+				});
+
+
+
+				
+			}else{
+				renderIfAuthorized(req,res,app,'/',localPermition);
+			}
+		});
+
+
+
+
+
+		this.router.get('/jobDescription',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=true;
+			localPermition.client=true;
+			localPermition.worker=true;
+
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+
+
+
+				jobPost.findOne({'jobGUID':req.query.id},function(err,jobFound){
+					if(!err){
+						if(jobFound){
+							user.findOne({'client.userGUID':jobFound.ownerGUID},function(err1,ownerFound){
+								if(!err1){
+									if(ownerFound){
+										renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user}});
+									}else{
+										renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,user:req.user}});
+									}
+								}else{
+									renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,user:req.user}});
+								}
+							})
+							
+						}else{
+							res.redirect('/');
+						}
+					}else{
+						res.redirect('/');
+					}
+				})
+			}
+
+			
+
+			//res.render('visitor/signUpQueue');
+		});
+
+		this.router.post('/applyJob',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+
+				console.dir(req.body);
+
+				myProposal=new proposal();
+
+				myProposal.proposalGUID=guid();				
+				myProposal.jobOwnerGUID=req.body.jobOwner;
+				myProposal.jobGUID=req.body.jobGUID;
+				myProposal.candidadeGUID=req.body.userGUID;	
+				myProposal.effDate=getDate();				
+				myProposal.offeredPrice=req.body.price;
+				myProposal.duration=req.body.duration;
+				myProposal.coverLetter	=req.body.coverLetter;
+				myProposal.whyToChoose	=req.body.whyYouFit;
+				myProposal.status='applied';	
+
+				myProposal.save(function(err,result){
+					if(!err){
+						if(result){
+							res.redirect('/jobDescription?id='+req.body.jobGUID);
+						}else{
+							res.redirect('/');
+						}
+					}else{
+						res.redirect('/');
+					}
+				});
+
+
+
+			
+			}			
+		});
+
+
+		this.router.get('/offers',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=false;
+
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+
+				jobPost.find({'ownerGUID':req.user.client.userGUID},function(errJob,jobArray){
+					if(!errJob){
+						if(jobArray){
+							console.log(req.user.client.userGUID);
+							proposal.find({'jobOwnerGUID':req.user.client.userGUID},function(errProp,propArray){
+								if(!errProp){
+									if(propArray){
+										renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user}});
+									}else{
+										res.redirect('/');
+									}
+								}else{
+									res.redirect('/');
+								}
+							});
+						}else{
+							res.redirect('/');
+						}
+					}else{
+						res.redirect('/');
+					}
+				});
+			
+				
+			
+			}else{
+				res.redirect('/');
+			}			
+		});
+
+
+		this.router.get('/messenger',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=true;
+			localPermition.worker=true;
+
+			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
+
+
+				renderIfAuthorized(req,res,app,'messenger',localPermition);
+
+			
+			}	else{
+				res.redirect('/');
+			}		
 		});
 
 }
@@ -701,7 +1094,22 @@ function getDate(){
     }else{
         day=currentdate.getDate();
     }
-    var datetime = currentdate.getFullYear()+'-'+month+'-'+day;
+
+
+    var hour='';
+    hour=currentdate.getHours();
+
+
+    var minute='';
+    minute=currentdate.getMinutes();
+
+    var second='';
+    second=currentdate.getSeconds();
+
+    var milliSecond='';
+    milliSecond=currentdate.getMilliseconds();
+
+    var datetime = currentdate.getFullYear()+'-'+month+'-'+day+'  '+hour+'-'+minute+'-'+second+'-'+milliSecond;
     return datetime;
 }
 

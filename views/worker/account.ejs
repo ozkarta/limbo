@@ -1,4 +1,9 @@
 
+
+<%  
+  if(locals.user!==undefined){
+    if(locals.user.worker!==undefined){
+%>
   <style>
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
     .row.content {height: 100%}
@@ -38,7 +43,13 @@
       <div class="nav">
         <div class="taboz">
           <ul class="nav nav-pills nav-stacked">
+            <%
+              console.dir(locals.user.worker);
+            %>
             <li class="active"><a href="#generalInfo" >General Information</a></li>
+            <li><a href="#weoffer" >We Offer</a></li>
+            <li><a href="#contactInfo" >Contact Information</a></li>
+            
             <li><a href="#companyInfo" >Company/Personal Information</a></li>
             <li><a href="#individualInfo" >Individual Information</a></li>
             <li><a href="#portfolio" >Posrfolio</a></li>
@@ -64,7 +75,7 @@
 
 
     <div class="col-sm-9 tab-content" id="generalInfo" >
-        <form id="formsid">
+        <form id="generalInfo" method="POST" action="updateGeneralInformation">
               
               <div class="form-group">
                       <label for="clientProfileImage">Upload Profile Logo</label>
@@ -76,24 +87,161 @@
 
                 <div class="form-group">
                   <label for="aboutyou">About You</label>
-                  <input type="text" name="aboutyou" id="aboutyou" placeholder="Job Title" class="form-control" required="required">
+                  <input type="text" name="aboutyou" id="aboutyou" placeholder="About You" class="form-control" required="required" value="<%=locals.user.worker.aboutCompany%>">
                 </div>
 
                <div class="form-group">
                   <label for="mission">Mission</label>
-                  <input type="text" name="mission" id="mission" placeholder="Job Title" class="form-control" required="required">
+                  <input type="text" name="mission" id="mission" placeholder="Mission" class="form-control" required="required" value="<%=locals.user.worker.mission%>">
                 </div>
 
                 <div class="form-group">
                   <label for="vission">Vission</label>
-                  <input type="text" name="vission" id="vission" placeholder="Job Title" class="form-control" required="required">
+                  <input type="text" name="vission" id="vission" placeholder="Vission" class="form-control" required="required" value="<%=locals.user.worker.vission%>">
                 </div>
 
-                 <div class="form-group">
+                <!--  <div class="form-group">
                   <label for="services">Add services you offer and press enter</label>
                   <br>
                   <input type="text" name="services" id="services" placeholder="" class="form-control" required="required" data-role="tagsinput">
                 </div>
+ -->
+
+                <!-- Button tag -->
+               
+               <!-- Button tag -->
+               
+
+                <div class="form-group">
+                  <button type="submit" class="btn btn-default" >Save Changes</button>
+                </div>
+
+ 
+
+        </form>
+    </div>
+
+    
+    <div class="col-sm-9 tab-content" id="weoffer">
+    <H1>What You Offer</H1>
+        <form method="POST" action="updateOffers">
+          <input type="hidden" name="counter" id="offerCounter" value="1" class="offerCounter">
+          <br>
+          <div class="dynamicOfferLayer">
+
+            <div  id="weOfferDefault">
+
+
+              <% for (i=1;i<=9;i++){
+                %>
+                   <div class="form-group">
+                      <label for="offer<%=i%>">Offer <%=i%></label>
+                      <%
+                        if(i<=locals.user.worker.services.length){
+                      %>
+                       <input type="text" name="offer<%=i%>" id="offer<%=i%>" placeholder="What you offer" class="form-control" value="<%=locals.user.worker.services[i-1].offer%>"/>   
+
+                      <input type="text" name="offerGlyph<%=i%>" class="icon-picker" placeholder="Click on icon and then search    ❱ "  value="<%=locals.user.worker.services[i-1].offerGlyphName%>"/> 
+                      <%
+                        }else{
+                        %>
+                           <input type="text" name="offer<%=i%>" id="offer<%=i%>" placeholder="What you offer" class="form-control" value=""/>   
+
+                           <input type="text" name="offerGlyph<%=i%>" class="icon-picker" placeholder="Click on icon and then search    ❱ "  value=""/> 
+                        <%
+                        }
+                      %>
+                  </div>
+                <%
+              }
+              %>
+              <!-- <div class="form-group">
+                  <label for="offer1">Offer 1</label>
+                  <input type="text" name="offer1" id="offer1" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph1" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 2</label>
+                  <input type="text" name="offer2" id="offer2" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph2" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 3</label>
+                  <input type="text" name="offer3" id="offer3" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph3" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 4</label>
+                  <input type="text" name="offer4" id="offer4" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph4" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 5</label>
+                  <input type="text" name="offer5" id="offer5" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph5" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 6</label>
+                  <input type="text" name="offer6" id="offer6" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph6" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 7</label>
+                  <input type="text" name="offer7" id="offer7" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph7" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 8</label>
+                  <input type="text" name="offer8" id="offer8" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph8" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+
+              <div class="form-group">
+                  <label for="offer1">Offer 9</label>
+                  <input type="text" name="offer9" id="offer9" placeholder="What you offer" class="form-control"/>   
+                  <input type="text" name="offerGlyph9" class="icon-picker" placeholder="Click on icon and then search    ❱ " /> 
+              </div>
+ -->
+
+            </div>
+            
+          </div>
+
+         
+
+          <input type="submit" name="" value="Save Result" class="form-control">
+        </form>
+    </div>
+
+    
+
+    <div class="col-sm-9 tab-content" id="contactInfo" >
+        <form id="contactInfo" method="POST" action="updateContactInformation">
+              
+              
+
+
+                <div class="form-group">
+                  <label for="contactAddress">Contact Address</label>
+                  <input type="text" name="contactAddress" id="contactAddress" placeholder="Contact Address" class="form-control" required="required" value="<%=locals.user.worker.contactAddress%>">
+                </div>
+
+               <div class="form-group">
+                  <label for="contactEmail">Contact EMAIL</label>
+                  <input type="text" name="contactEmail" id="contactEmail" placeholder="Contact EMAIL" class="form-control" required="required" value="<%=locals.user.worker.contactEmail%>">
+                </div>
+
+                <div class="form-group">
+                  <label for="contactPhoneNumber">Contact Phone</label>
+                  <input type="text" name="contactPhoneNumber" id="contactPhoneNumber" placeholder="Contact Phone Number" class="form-control" required="required" value="<%=locals.user.worker.contactPhoneNumber%>">
+                </div>                
 
                 <div class="form-group">
                   <button type="submit" class="btn btn-default" >Save Changes</button>
@@ -268,6 +416,14 @@
         $(content).siblings('.tab-content').hide();
     });
 });
+
+
+function deleteOffer(opt){
+  var elementToRemove=document.getElementById(opt);
+  console.dir(elementToRemove);
+  elementToRemove.parentNode.removeChild(elementToRemove);
+};
+
 </script>
 
 
@@ -301,6 +457,67 @@ function submitForm(){
   $('#formsid').submit();
 }
 
+function addNewOffer(){
+ // alert('adding');
+ var divGUID=guid();
+ var layer=$('.dynamicOfferLayer');
+ var counter=parseInt($('.offerCounter').val());
+$('.offerCounter').val(''+(counter+1));
+
+ var div=document.createElement('div');
+ div.setAttribute('class','form-group');
+div.setAttribute('id',divGUID);
+
+var label=document.createElement('label');
+var input1=document.createElement('input');
+var input2=document.createElement('input');
+var input3=document.createElement('input');
+
+label.setAttribute('for','offer'+(counter+1));
+label.innerText='Offer ';//+(counter+1);
+
+input1.setAttribute('type','text');
+input2.setAttribute('type','text');
+input3.setAttribute('type','button')
+
+input1.setAttribute('name','offer_'+divGUID);
+input2.setAttribute('name','offerGlyph_'+divGUID);
+
+input3.setAttribute('onclick',"deleteOffer('"+divGUID+"')");
+input3.setAttribute('value','Remove Offer');
+
+input1.setAttribute('placeholder','What You Offer');
+input2.setAttribute('placeholder','Click on icon and then search    ❱ ');
+
+input1.setAttribute('class','form-control');
+input2.setAttribute('class','icon-picker');
+
+div.appendChild(label);
+div.appendChild(input1);
+div.appendChild(input2);
+div.appendChild(input3);
+
+layer.append(div);
+
+layer.append('<div class="input-group"><input type="text" name="offerGlyph" class="icon-picker form-control" placeholder="Click on icon and then search &nbsp;&nbsp;&nbsp;❱ "><span class="input-group-addon pointer"><i class="glyphicon  glyphicon-picture"></i></span></div>');
+
+ $(".icon-picker").iconPicker();
+  return false;
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
 
 </script>
+<%
+  }
+}
+%>
 

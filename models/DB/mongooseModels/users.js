@@ -31,6 +31,11 @@ module.exports=mongoose.model('users',{
 
 		whoAmI   				:String,           //Company or individual
 
+		//contact information
+
+		contactAddress			:String,
+		contactEmail			:String,
+		contactPhoneNumber		:String,
 
 		passwordHash			:String,
 		hash 					:String,
@@ -40,7 +45,8 @@ module.exports=mongoose.model('users',{
 		userRole				:String,
 
 		subscribers			    :[],
-		subscribes 		    	:[]
+		subscribes 		    	:[],
+		feadback				:[]
 	},
 	client:{
 		userGUID				:String,

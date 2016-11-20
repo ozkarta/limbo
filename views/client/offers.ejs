@@ -1,0 +1,201 @@
+<style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 100%}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;}
+    }
+
+    .hidden {
+     display:none;
+}
+
+  </style>
+
+
+  <%
+    if(locals.jobs!==undefined){
+      if(locals.jobs.length>0){
+        %>
+          <div class="container-fluid" >
+            <div class="row content">
+              <div class="col-sm-3 sidenav">
+                <p>Your Account</p>
+                <div class="nav">
+                  <div class="taboz">
+
+                    <ul class="nav nav-pills nav-stacked">
+                        <%
+                          for(i=0;i<locals.jobs.length;i++){
+                            %>
+                              <li><a href="#stage<%=i%>" ><%=locals.jobs[i].jobTitle%></a></li>
+                            <%
+                          }
+                        %>
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+
+              <%
+                for(i=0;i<locals.jobs.length;i++){
+                  %>
+                    <div class="col-sm-9 tab-content" id="stage<%=i%>" >
+                        <div class="form-group">
+
+
+                          <center>
+                              <h1 class="form-control"><%=locals.jobs[i].jobTitle%></h1>
+                          </center>
+
+                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                           <!--  <div class="panel panel-default">
+                              <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Collapsible Group Item #1
+                                  </a>
+                                </h4>
+                              </div>
+                              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                              </div>
+                            </div> -->
+
+                            <%
+                              if(locals.proposals!==undefined){   
+                                                                                       
+                                if(locals.proposals.length>=0){
+                                  for(j=0;j<locals.proposals.length;j++){
+                                  console.log(locals.proposals[j].jobGUID+'  VS  '+locals.jobs[i].jobGUID);
+                                    if(locals.proposals[j].jobGUID===locals.jobs[i].jobGUID){
+                                      %>
+                                        <div class="panel panel-default">
+                                          <div class="panel-heading" role="tab" id="headingTwo">
+                                            <h4 class="panel-title">
+                                              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                <%=locals.proposals[j].effDate%>   
+                                                <%=locals.proposals[j].candidadeGUID%>
+                                              </a>
+                                            </h4>
+                                          </div>
+                                          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                              <div class="form-group">
+                                                  cover letter
+                                                  <p><%=locals.proposals[j].coverLetter%></p>
+                                                  <br/>
+
+                                                  Why Me
+                                                  <p><%=locals.proposals[j].whyToChoose%></p>
+                                                  <br/>
+
+                                                  Duration
+                                                  <p><%=locals.proposals[j].duration%> Month</p>
+                                                  <br/>
+
+                                                  Price
+                                                  <p><%=locals.proposals[j].offeredPrice%>   GEL</p>
+                                                  <br/>
+
+
+
+                                              </div>
+                                              <form action="messenger">
+                                                <input type="hidden" name="candidade" value="<%=locals.proposals[j].candidadeGUID%>">
+                                                <div class="form-group">
+                                                  <input type="submit"  value="Send Message">
+                                                </div>
+                                              </form>
+
+                                              <form action="confirmProposal">
+                                                <input type="hidden" name="candidade" value="<%=locals.proposals[j].candidadeGUID%>">
+                                                <div class="form-group">
+                                                  <input type="submit"  value="Confirm Proposal">
+                                                </div>
+                                              </form>
+                                              
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <%
+                                    }
+                                  }
+                                }
+                              }
+                            %>
+                            
+
+
+
+                            <!-- <div class="panel panel-default">
+                              <div class="panel-heading" role="tab" id="headingThree">
+                                <h4 class="panel-title">
+                                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Collapsible Group Item #3
+                                  </a>
+                                </h4>
+                              </div>
+                              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                              </div>
+                            </div> -->
+
+
+                          </div>
+
+
+                        </div>
+                    </div>
+                  <%
+                }
+              %>
+
+            </div>
+          </div>
+
+        <%
+      }
+    }
+  %>
+
+
+  <script>
+ $(document).ready(function () {
+    $('.taboz ul li:first').addClass('active');
+    $('.tab-content:not(:first)').hide();
+    $('.taboz ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+    });
+});
+
+</script>

@@ -1,8 +1,446 @@
 <script>
+var connection;
 	$(document).ready(function() { 
 				
+				if('WebSocket' in window){
+					console.dir(window);
+					console.log('browser supports Web Socket');					
+					connection=new WebSocket('ws://localhost:2029');
+
+
+
+					connection.onopen = function(){
+						var sender;
+						var receiver;
+						sender=document.getElementById('sender').value;
+						receiver=document.getElementById('receiver').value;
+						need='';
+						if(receiver!==''){
+							need='messageTo';
+						}else{
+							need='getDefaultList';
+						}
+						var contactJSON={
+							from:sender,
+							to:receiver,
+							need:need
+						}
+
+						var contactJSON_string=JSON.stringify(contactJSON);
+						//alert(contactJSON_string);
+						
+					   /*Send a small message to the console once the connection is established */
+					   console.log('WS Connection was opened to the server!');
+					   connection.send(contactJSON_string);
+					   //connection.send('Hey server, this is second one');
+					}
+					//___________________________________
+
+					connection.onclose = function(){
+					   console.log('WS Connection was closed');
+					}
+					//___________________________________
+					connection.onmessage=function(ev){
+						var data=JSON.parse(ev.data);
+						console.dir(data);
+
+						for(i=0;i<data.length;i++){
+							
+								createContact(data[i]);
+								arrangeDisplay();
+							
+						}
+						//alert('message received');
+					}
+					//___________________________________
+					//___________________________________
+					//___________________________________
+					//___________________________________
+					//___________________________________
+					//___________________________________
+					//___________________________________
+					//___________________________________
+
+					
+
+					
+				}else{
+					alert('Your browser does not support WebSocket class,Try to update it');
+				}
+
+
+				
+
+			
 	});
+
+function createContact(data){
+	console.dir(data);
+
+	var destGuid='';
+
+	if(data.leftUserGUID===document.getElementById('sender').value){
+			destGuid=data.rightUserGUID;						
+	}
+	if(data.rightUserGUID===document.getElementById('sender').value){
+			data.leftUserGUID;
+	}
+	var guid=destGuid.replace(/-/g,'');
+
+	var li=document.createElement('li');
+	li.setAttribute('class','active bounceInDown');
+
+	var a=document.createElement('a');
+	a.setAttribute('href','#'+guid);
+	a.setAttribute('class','clearfix');
+
+	var img=document.createElement('img');
+	img.setAttribute('class','img-circle');
+	img.setAttribute('src','http://bootdey.com/img/Content/user_1.jpg');
+
+	var div1=document.createElement('div');
+	div1.setAttribute('class','friend-name');
+
+
+	var strong=document.createElement('strong');
+	strong.innerHTML=guid;
+
+	var div2=document.createElement('div');
+	div2.setAttribute('class','last-message text-muted');
+	div2.innerHTML='this is the message body';
+
+	var small1=document.createElement('small');
+	small1.setAttribute('class','time text-muted');
+	small1.innerHTML='Just now';
+
+	var small2=document.createElement('small');
+	small2.setAttribute('class','chat-alert label label-danger');
+	small2.innerHTML='1';
+
+	a.appendChild(img);
+	div1.appendChild(strong);
+	a.appendChild(div1);
+	a.appendChild(div2);
+	a.appendChild(small1);
+	a.appendChild(small2);
+	li.appendChild(a);
+	
+	document.getElementById('contactList').appendChild(li);
+
+	createContactMessageLayout(guid,data);
+}
+
+function createContactMessageLayout(guid,data){
+	var mainDiv=document.createElement('div');
+	mainDiv.setAttribute('class','col-sm-9 tab-content bg-white');
+	mainDiv.setAttribute('id',guid);
+	mainDiv.innerHTML=guid;
+
+	//__________________CHAT BOX
+	var chatBoxDiv=document.createElement('div');
+	chatBoxDiv.setAttribute('class','chat-box bg-white');
+
+	var inputGroupDiv=document.createElement('div');
+	inputGroupDiv.setAttribute('class','input-group');
+
+	var inputMessage=document.createElement('input');
+	inputMessage.setAttribute('class','form-control border no-shadow no-rounded');
+	inputMessage.setAttribute('placeholder','Type your message here');
+
+	var messageSpan=document.createElement('span');
+	messageSpan.setAttribute('class','input-group-btn');
+
+	var messageButton=document.createElement('button');
+	messageButton.setAttribute('class','btn btn-success no-rounded');
+	messageButton.setAttribute('type','button');
+	messageButton.innerHTML='Send';
+
+
+	//_______________APPENDS
+	messageSpan.appendChild(messageButton);
+	inputGroupDiv.appendChild(inputMessage);
+	inputGroupDiv.appendChild(messageSpan);
+	chatBoxDiv.appendChild(inputGroupDiv);
+
+
+
+	mainDiv.appendChild(chatBoxDiv);
+	//______________________MESSAGEBOX APPENDS
+	//______________________OTHER APPENDS
+	document.getElementById('contactMessageLayout').appendChild(mainDiv);
+}
+
+
+function arrangeDisplay(){
+				$('.taboz ul li:first').addClass('active');
+			    $('.tab-content:not(:first)').hide();
+			    $('.taboz ul li a').click(function (event) {
+			        event.preventDefault();
+			        var content = $(this).attr('href');
+			        $(this).parent().addClass('active');
+			        $(this).parent().siblings().removeClass('active');
+			        $(content).show();
+			        $(content).siblings('.tab-content').hide();
+			    });
+}
+
 
 
 	
 </script>
+<div style="display:none">
+<%
+	if(locals.sender.client.userGUID!==undefined){
+		%>
+			<input type="hidden" id="sender" name="sender" value="<%=locals.sender.client.userGUID%>">
+		<%
+	}
+	if(locals.sender.worker.userGUID!==undefined){
+		%>
+			<input type="hidden" id="sender" name="sender" value="<%=locals.sender.worker.userGUID%>">
+		<%
+	}
+%>
+	
+	<input type="hidden" id="receiver" name="receiver" value="<%=locals.receiver%>">
+</div>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container-fluid bootstrap snippet">
+    <div class="row content">
+		<div class="col-sm-3 sidenav bg-white">
+			<div class=" row border-bottom padding-sm" style="height: 40px;">
+            	Contacts
+            </div>
+			<div class="nav">
+        		<div class="taboz">
+        			<ul class="nav nav-pills nav-stacked friend-list" id="contactList">
+        				
+        				<!-- <li class="active bounceInDown">
+		                	<a href="#a" class="clearfix">
+		                		<img src="http://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+		                		<div class="friend-name">	
+		                			<strong>John Doe</strong>
+		                		</div>
+		                		<div class="last-message text-muted">Hello, Are you there?</div>
+		                		<small class="time text-muted">Just now</small>
+		                		<small class="chat-alert label label-danger">1</small>
+		                	</a>
+	                	</li>
+	                	<li class="active bounceInDown">
+		                	<a href="#b" class="clearfix">
+		                		<img src="http://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+		                		<div class="friend-name">	
+		                			<strong>John Doe</strong>
+		                		</div>
+		                		<div class="last-message text-muted">Hello, Are you there?</div>
+		                		<small class="time text-muted">Just now</small>
+		                		<small class="chat-alert label label-danger">1</small>
+		                	</a>
+	                	</li> -->
+
+        			</ul>
+        		</div>
+        	</div>
+		</div>
+		<div id="contactMessageLayout">
+				<!-- <div class="col-sm-9 tab-content" id="a">
+					aaaaaaaaaa
+				</div>
+				<div class="col-sm-9 tab-content" id="b">
+					bbbbbbbbbb
+				</div> -->
+		</div>
+		
+	</div>
+</div>
+
+<style>
+    
+
+
+.bg-white {
+  background-color: #fff;
+}
+
+.friend-list {
+  list-style: none;
+margin-left: -40px;
+}
+
+.friend-list li {
+  border-bottom: 1px solid #eee;
+}
+
+.friend-list li a img {
+  float: left;
+  width: 45px;
+  height: 45px;
+  margin-right: 0px;
+}
+
+ .friend-list li a {
+  position: relative;
+  display: block;
+  padding: 10px;
+  transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -ms-transition: all .2s ease;
+  -o-transition: all .2s ease;
+}
+
+.friend-list li.active a {
+  background-color: #f1f5fc;
+}
+
+.friend-list li a .friend-name, 
+.friend-list li a .friend-name:hover {
+  color: #777;
+}
+
+.friend-list li a .last-message {
+  width: 65%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.friend-list li a .time {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+}
+
+small, .small {
+  font-size: 85%;
+}
+
+.friend-list li a .chat-alert {
+  position: absolute;
+  right: 8px;
+  top: 27px;
+  font-size: 10px;
+  padding: 3px 5px;
+}
+
+.chat-message {
+  padding: 60px 20px 115px;
+}
+
+.chat {
+    list-style: none;
+    margin: 0;
+}
+
+.chat-message{
+    background: #f9f9f9;  
+}
+
+.chat li img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50em;
+  -moz-border-radius: 50em;
+  -webkit-border-radius: 50em;
+}
+
+img {
+  max-width: 100%;
+}
+
+.chat-body {
+  padding-bottom: 20px;
+}
+
+.chat li.left .chat-body {
+  margin-left: 70px;
+  background-color: #fff;
+}
+
+.chat li .chat-body {
+  position: relative;
+  font-size: 11px;
+  padding: 10px;
+  border: 1px solid #f1f5fc;
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.chat li .chat-body .header {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #f1f5fc;
+}
+
+.chat li .chat-body p {
+  margin: 0;
+}
+
+.chat li.left .chat-body:before {
+  position: absolute;
+  top: 10px;
+  left: -8px;
+  display: inline-block;
+  background: #fff;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid #f1f5fc;
+  border-left: 1px solid #f1f5fc;
+  content: '';
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+}
+
+.chat li.right .chat-body:before {
+  position: absolute;
+  top: 10px;
+  right: -8px;
+  display: inline-block;
+  background: #fff;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid #f1f5fc;
+  border-right: 1px solid #f1f5fc;
+  content: '';
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+}
+
+.chat li {
+  margin: 15px 0;
+}
+
+.chat li.right .chat-body {
+  margin-right: 70px;
+  background-color: #fff;
+}
+
+.chat-box {
+  position: fixed;
+  bottom: 0;
+  left: 444px;
+  right: 0;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  transition: all .5s ease;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  -o-transition: all .5s ease;
+}
+
+.primary-font {
+  color: #3c8dbc;
+}
+
+a:hover, a:active, a:focus {
+  text-decoration: none;
+  outline: 0;
+}
+</style>

@@ -7,6 +7,10 @@ var jobPost=require('../models/DB/mongooseModels/jobPost');
 var jobCategory=require('../models/DB/mongooseModels/jobCategory');
 var offer=require('../models/DB/mongooseModels/offers');
 var proposal=require('../models/DB/mongooseModels/proposals');
+var messageHistory=require('../models/DB/mongooseModels/messageHistory');
+var message=require('../models/DB/mongooseModels/message');
+
+
 
 var permition=require('../models/permition');
 
@@ -15,6 +19,10 @@ const saltRounds = 10;
 
 var LocalStrategy = require('passport-local').Strategy;
 
+
+var cookie = require('cookie');
+var cookieParser = require('cookie-parser')
+var url = require('url');
 
 mongoose.connect(dbConfig.url,function(err){
 	if(!err){
@@ -28,11 +36,139 @@ mongoose.connect(dbConfig.url,function(err){
 
 
 
-myRouter=function(app,_passport){
+myRouter=function(app,_passport,io,wss,store){
 		this.router=express.Router();
 		this.passport=_passport;
 		app.set('layout','layouts/visitor_layout');
+		//   SOCKET>IO
 
+		wss.on('connection', function connection(ws) {
+		  
+		  var location = url.parse(ws.upgradeReq.url, true);
+		  
+		  // you might use location.query.access_token to authenticate or share sessions 
+		  // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312) 
+		  //console.dir(ws.upgradeReq);
+		  var cookies=cookie.parse(ws.upgradeReq.headers.cookie);
+    	  var sid=cookieParser.signedCookie(cookies["connect.sid"],'limbo_secret_keyword');
+
+
+    	  store.get(sid, function (err, ss) {
+    	  	console.dir(ss);
+
+
+
+    	  	
+
+    	  	ws.on('message', function incoming(message) {
+			    
+
+			    initSession(ss,function(){
+			    	console.log('exited callback');
+			    	console.log('received: %s', message +' from SID '+sid);
+			    	var connectionJSON=JSON.parse(message);
+			    	console.dir(connectionJSON);
+
+			    	var user=undefined;
+			    	if(ws.upgradeReq.session.mongoObject.client.userGUID!==undefined){
+			    		user=ws.upgradeReq.session.mongoObject.client;
+			    	}
+			    	if(ws.upgradeReq.session.mongoObject.worker.userGUID!==undefined){
+			    		ws.upgradeReq.session.mongoObject.worker;
+			    	}
+
+			    	//console.dir(user);
+			    	var sender=user.userGUID;
+			    	if(connectionJSON!==undefined){
+			    		if(connectionJSON.need!==undefined){
+			    			if(connectionJSON.need=='messageTo'){
+			    				if(connectionJSON.receiver!==''){
+				    				newMessageHistory(messageHistory,sender,connectionJSON.to,function(result){
+				    					console.log('created');
+				    					console.dir(result);
+				    					ws.send(JSON.stringify(result));
+				    				});
+			    				}
+			    			}
+			    			if(connectionJSON.need=='getDefaultList'){
+			    				getMessagesDB(messageHistory,sender,function(result){
+			    					console.log('found');
+			    					console.dir(result);
+			    					ws.send(JSON.stringify(result));
+			    				});
+			    			}
+			    		}
+			    	}
+
+			    	
+			    });
+			    	
+			  });
+
+    	  });
+
+
+		  
+		 
+		  //ws.send('something');
+
+		  function initSession(ss,callback){
+		  	if(ws.upgradeReq.session){
+
+		    	  		if(ws.upgradeReq.session.mongoObject!==undefined){
+		    	  			//console.dir((ws.upgradeReq.session.mongoObject._id).toString());
+		    	  			if((ws.upgradeReq.session.mongoObject._id).toString()!==ss.passport.user){
+				    	  		user.findOne({'_id':ss.passport.user},function(err,foundUser){
+				    	  			if(!err){
+				    	  				if(foundUser){
+				    	  					ss.mongoObject=foundUser;
+				    	  					//console.dir(ss);
+				    	  					store.createSession(ws.upgradeReq, ss);
+				    	  					console.log('New User was assigned   1');
+				    	  					//console.dir(ws.upgradeReq.session.passport.user);
+				    	  					callback();
+				    	  				}else{
+				    	  					ws.send('No User was not found');
+				    	  					console.log('new user was not found');
+				    	  					callback();
+				    	  				}
+				    	  			}else{
+				    	  				ws.send('Something went wrong');
+				    	  				console.log('something went wrong');
+				    	  				callback();
+				    	  			}
+				    	  		});    	  		
+				    	  	}else{
+				    	  		console.log('user exists in session');
+				    	  		callback();
+				    	  	}
+		    	  		}
+		    	  		
+		    	  	
+		    	  	}else{
+		    	  		user.findOne({'_id':ss.passport.user},function(err,foundUser){
+			    	  			if(!err){
+			    	  				if(foundUser){
+			    	  					ss.mongoObject=foundUser;
+			    	  					//console.dir(ss);
+			    	  					store.createSession(ws.upgradeReq, ss);
+			    	  					console.log('New User was assigned    2');
+			    	  					//console.dir(ws.upgradeReq.session.passport.user);
+			    	  					callback();
+			    	  				}else{
+			    	  					ws.send('No User was not found');
+			    	  					console.log('new user was not found');
+			    	  					callback();
+			    	  				}
+			    	  			}else{
+			    	  				ws.send('Something went wrong');
+			    	  				console.log('something went wrong');
+			    	  				callback();
+			    	  			}
+			    	  		});
+		    	  	}
+		  }
+		});
 
 		//PASSPORT  CONFIGURATIONS
 		this.passport.serializeUser(function(user, done) {
@@ -971,8 +1107,9 @@ myRouter=function(app,_passport){
 
 			if(isAuthorized(req,res,app,'updateGeneralInformation',localPermition)){
 
+				var receiver=req.query.candidade;
 
-				renderIfAuthorized(req,res,app,'messenger',localPermition);
+				renderIfAuthorized(req,res,app,'messenger',localPermition,{locals:{receiver:receiver,sender:req.user}});
 
 			
 			}	else{
@@ -1112,7 +1249,45 @@ function getDate(){
     var datetime = currentdate.getFullYear()+'-'+month+'-'+day+'  '+hour+'-'+minute+'-'+second+'-'+milliSecond;
     return datetime;
 }
+//   ______________MESSenger
+function getMessageDB(messageHistory,sender,receiver,messageHistoryGUID,callback){
 
+}
+function getMessagesDB(messageHistory,sender,callback){
+	messageHistory.find({$or:[{leftUserGUID:sender},{rightUserGUID:sender}]},function(err,result){
+		if(!err){
+			callback(result);
+		}else{
+			callback(undefined);
+		}
+	});
+}
+function newMessageHistory(messageHistory,sender,receiver,callback){
+	
+	messageHistory.find({$or:[{leftUserGUID:sender,rightUserGUID:receiver},{leftUserGUID:receiver,rightUserGUID:sender}]},function(error,found){
+		if(!error){
+			if(found){
+				if(found.length>0){
+					getMessagesDB(messageHistory,sender,callback);
+				}else{
+					newMessageHistoryObject=new messageHistory();
+					newMessageHistoryObject.messageHistoryGUID=guid();
+					newMessageHistoryObject.leftUserGUID=sender;
+					newMessageHistoryObject.rightUserGUID=receiver;
+					newMessageHistoryObject.effDate=getDate();
 
+					newMessageHistoryObject.save(function(err,result){
+						if(!err){
+							getMessagesDB(messageHistory,sender,callback);
+						}
+					});
+				}
+			}
+		}
+	})	
+}
+function sendMessageDB(messageHistory,sebder,receiver,messageHistoryGUID,callback){
+
+}
 
 module.exports.myRouter=myRouter;

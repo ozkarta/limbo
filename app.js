@@ -1,4 +1,5 @@
 var express = require('express');
+
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -14,10 +15,37 @@ var routes = require('./routes/index');
 var passport = require('passport');
 var expressSession = require('express-session');
 
+var RedisStore = require('connect-redis')(expressSession);
+var store=new RedisStore({
+    host: 'localhost',
+    port: 6379,
+    db: 2,
+    pass: 'RedisPASS'
+  })
+
+//var store  = new expressSession.MemoryStore;
 
 
 
-var app = express();
+var app =express();
+
+var appName='LIMBO';
+var  port=2029;
+
+
+
+
+
+var io=undefined;
+//var io=require('socket.io')(server);
+var server=app.listen(port,function(){
+  console.log(appName+' is listening to  '+port);
+});
+
+var WebSocketServer = require('ws').Server;
+var wss = WebSocketServer({ server: server });
+
+
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -32,13 +60,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 
 
-app.use(expressSession({secret: 'limbo_secret_keyword'}));
+app.use(expressSession(
+{
+  store: store,
+  secret: 'limbo_secret_keyword'
+}
+
+));
 app.use(passport.initialize());
 app.use(passport.session());
+
 //app.use(helmet());
 //app.use('/users', users);
 
-var myRouter=new routes.myRouter(app,passport);
+var myRouter=new routes.myRouter(app,passport,io,wss,store);
 app.use('/', myRouter.router);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -79,14 +114,6 @@ app.use(function(err, req, res, next) {
 
 
 
-appName='LIMBO';
-var  port=2029;
-
-
-
-app.listen(port,function(){
-  console.log(appName+' is listening to  '+port);
-})
 
 
 //app.set('layout','layouts/layoutMainPage.ejs');

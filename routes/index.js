@@ -8,7 +8,7 @@ var jobCategory=require('../models/DB/mongooseModels/jobCategory');
 var offer=require('../models/DB/mongooseModels/offers');
 var proposal=require('../models/DB/mongooseModels/proposals');
 var messageHistory=require('../models/DB/mongooseModels/messageHistory');
-var message=require('../models/DB/mongooseModels/message');
+var messageObject=require('../models/DB/mongooseModels/message');
 
 
 
@@ -41,6 +41,7 @@ myRouter=function(app,_passport,io,wss,store){
 		this.passport=_passport;
 		app.set('layout','layouts/visitor_layout');
 		//   SOCKET>IO
+		var connectedWSUsers=[];
 
 		wss.on('connection', function connection(ws) {
 		  
@@ -54,7 +55,7 @@ myRouter=function(app,_passport,io,wss,store){
 
 
     	  store.get(sid, function (err, ss) {
-    	  	console.dir(ss);
+    	  	//console.dir(ss);
 
 
 
@@ -63,38 +64,56 @@ myRouter=function(app,_passport,io,wss,store){
     	  	ws.on('message', function incoming(message) {
 			    
 
-			    initSession(ss,function(){
+			    initSession(ss,ws,function(){
+
 			    	console.log('exited callback');
 			    	console.log('received: %s', message +' from SID '+sid);
 			    	var connectionJSON=JSON.parse(message);
-			    	console.dir(connectionJSON);
+			    	//console.dir(connectionJSON);
 
 			    	var user=undefined;
+			    	// console.log('______________WORKER');
+			    	// console.log(ws.upgradeReq.session.mongoObject.worker.userGUID);
+			    	// console.log('______________CLIENT');
+			    	// console.log(ws.upgradeReq.session.mongoObject.client.userGUID);
+			    	
+
+
 			    	if(ws.upgradeReq.session.mongoObject.client.userGUID!==undefined){
 			    		user=ws.upgradeReq.session.mongoObject.client;
 			    	}
 			    	if(ws.upgradeReq.session.mongoObject.worker.userGUID!==undefined){
-			    		ws.upgradeReq.session.mongoObject.worker;
+			    		user=ws.upgradeReq.session.mongoObject.worker;
 			    	}
 
 			    	//console.dir(user);
 			    	var sender=user.userGUID;
 			    	if(connectionJSON!==undefined){
-			    		if(connectionJSON.need!==undefined){
-			    			if(connectionJSON.need=='messageTo'){
+			    		if(connectionJSON.action!==undefined){
+			    			if(connectionJSON.action=='messageTo'){
 			    				if(connectionJSON.receiver!==''){
 				    				newMessageHistory(messageHistory,sender,connectionJSON.to,function(result){
 				    					console.log('created');
-				    					console.dir(result);
+				    					//console.dir(result);
 				    					ws.send(JSON.stringify(result));
 				    				});
 			    				}
 			    			}
-			    			if(connectionJSON.need=='getDefaultList'){
+			    			if(connectionJSON.action=='getDefaultList'){
 			    				getMessagesDB(messageHistory,sender,function(result){
 			    					console.log('found');
-			    					console.dir(result);
+			    					//console.dir(result);
 			    					ws.send(JSON.stringify(result));
+			    				});
+			    			}
+			    			if(connectionJSON.action=='newMessage'){
+			    				var to=connectionJSON.to;
+			    				var from=connectionJSON.from;
+			    				var body=connectionJSON.body;
+			    				var historyGUID=connectionJSON.history;
+
+			    				sendMessageDB(messageHistory,messageObject,from,to,historyGUID,body,function(newMessage){
+			    					sendMessageToConnectedClients(connectedWSUsers,from,to,newMessage);
 			    				});
 			    			}
 			    		}
@@ -108,11 +127,29 @@ myRouter=function(app,_passport,io,wss,store){
     	  });
 
 
-		  
+		ws.on('open', function open() {
+		  console.log('___________________connected');
+		  // initSession(ss,function(){
+
+		  // });
+		});
+		 
+		ws.on('close', function close() {
+		  console.log('___________________disconnected');
+		  for(i=connectedWSUsers.length-1;i>=0;i--){
+		  	// if(connectedWSUsers[i].userObject.__id===ws.upgradeReq.session.mongoObject._id.toString()){
+		  	// 	console.log('we must remove this');
+		  	// }
+		  	if(connectedWSUsers[i].ws.readyState===connectedWSUsers[i].ws.CLOSED){
+		  		connectedWSUsers.splice(i,1);
+		  	}
+		  }
+		});
 		 
 		  //ws.send('something');
 
-		  function initSession(ss,callback){
+		  function initSession(ss,ws,callback){
+		  	//console.dir(ss);
 		  	if(ws.upgradeReq.session){
 
 		    	  		if(ws.upgradeReq.session.mongoObject!==undefined){
@@ -121,6 +158,34 @@ myRouter=function(app,_passport,io,wss,store){
 				    	  		user.findOne({'_id':ss.passport.user},function(err,foundUser){
 				    	  			if(!err){
 				    	  				if(foundUser){
+				    	  					var type;
+				    	  					var userObject;
+				    	  					if(foundUser.worker.userGUID!==undefined){
+				    	  						type='worker';
+				    	  						userObject=foundUser.worker;
+				    	  					}
+				    	  					if(foundUser.client.userGUID!==undefined){
+				    	  						type='client';
+				    	  						userObject=foundUser.client;
+				    	  					}
+				    	  					var addOrNot=true;
+				    	  					// for(u=0;u<connectedWSUsers.length;u++){
+				    	  					// 	if(connectedWSUsers[u].userGUID===ss.passport.user.userGUID){
+				    	  					// 		addOrNot=false;
+				    	  					// 	}
+				    	  					// }
+
+				    	  					for(u=connectedWSUsers.length-1;u>=0;u--){
+				    	  						if(connectedWSUsers[u].userGUID===ss.passport.user.userGUID){
+				    	  							addOrNot=false;
+				    	  						}				    	  						
+				    	  					}
+				    	  					if(addOrNot){
+				    	  						connectedWSUsers.push({__id:ss.passport.user,userGUID:userObject.userGUID,type:type,user:userObject,ws:ws});
+				    	  					
+				    	  					}
+
+
 				    	  					ss.mongoObject=foundUser;
 				    	  					//console.dir(ss);
 				    	  					store.createSession(ws.upgradeReq, ss);
@@ -149,6 +214,34 @@ myRouter=function(app,_passport,io,wss,store){
 		    	  		user.findOne({'_id':ss.passport.user},function(err,foundUser){
 			    	  			if(!err){
 			    	  				if(foundUser){
+			    	  					var type;
+				    	  					var userObject;
+				    	  					if(foundUser.worker.userGUID!==undefined){
+				    	  						type='worker';
+				    	  						userObject=foundUser.worker;
+				    	  					}
+				    	  					if(foundUser.client.userGUID!==undefined){
+				    	  						type='client';
+				    	  						userObject=foundUser.client;
+				    	  					}
+				    	  					var addOrNot=true;
+				    	  					// for(u=0;u<connectedWSUsers.length;u++){
+				    	  					// 	if(connectedWSUsers[u].userGUID===ss.passport.user.userGUID){
+				    	  					// 		addOrNot=false;
+				    	  					// 	}
+				    	  					// }
+
+				    	  					for(u=connectedWSUsers.length-1;u>=0;u--){
+				    	  						if(connectedWSUsers[u].userGUID===ss.passport.user.userGUID){
+				    	  							addOrNot=false;
+				    	  						}				    	  						
+				    	  					}
+				    	  					if(addOrNot){
+				    	  						connectedWSUsers.push({__id:ss.passport.user,userGUID:userObject.userGUID,type:type,user:userObject,ws:ws});
+				    	  					
+				    	  					}
+
+
 			    	  					ss.mongoObject=foundUser;
 			    	  					//console.dir(ss);
 			    	  					store.createSession(ws.upgradeReq, ss);
@@ -169,6 +262,8 @@ myRouter=function(app,_passport,io,wss,store){
 		    	  	}
 		  }
 		});
+
+		
 
 		//PASSPORT  CONFIGURATIONS
 		this.passport.serializeUser(function(user, done) {
@@ -1286,7 +1381,62 @@ function newMessageHistory(messageHistory,sender,receiver,callback){
 		}
 	})	
 }
-function sendMessageDB(messageHistory,sebder,receiver,messageHistoryGUID,callback){
+function sendMessageDB(messageHistory,message,sender,receiver,messageHistoryGUID,messageBody,callback){
+	newMessage=new message();
+	newMessage.messageGUID=guid();
+	newMessage.effDate=getDate();
+	newMessage.senderGUID=sender;
+	newMessage.messageBody=messageBody;
+
+
+	messageHistory.findOne({'messageHistoryGUID':messageHistoryGUID},function(err,result){
+		if(!err){
+			if(result){
+				result.message.push(newMessage);
+				result.save(function(err,saved){
+					if(!err){
+						if(saved){
+							console.log('new message saved !!!');
+							callback(newMessage);
+						}else{
+							callback(undefined);
+						}
+					}else{
+							callback(undefined);
+					}
+				})
+			}
+		}
+	})
+}
+
+function sendMessageToConnectedClients(wsClientList,senderGUID,receiverGUID,messageJSON){
+	var resultJSON={
+				action:'updateMessage',
+				message:messageJSON,
+				sender:senderGUID,
+				receiver:receiverGUID
+			};
+	//console.dir(wsClientList);
+	for(i=0;i<wsClientList.length;i++){
+		if(wsClientList[i].userGUID===senderGUID || wsClientList[i].userGUID===receiverGUID){
+			
+			if(wsClientList[i].ws.readyState===wsClientList[i].ws.OPEN){
+				console.log(wsClientList[i].type+'   is connected');
+				console.log('trying to send  message .......')
+				try{
+					wsClientList[i].ws.send(JSON.stringify(resultJSON));
+				}catch(ex){
+					console.log('Exception was thrown!!');
+					console.dir(ex);
+				}
+				
+				console.log('message was sent!!!');
+			}else{
+				console.log('NOT CONNECTED');
+			}
+		}
+	}
 
 }
 

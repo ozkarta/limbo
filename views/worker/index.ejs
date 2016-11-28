@@ -9,6 +9,9 @@ if(locals!==undefined){
 	if(locals.defaultJobs!==undefined){
 		if(locals.defaultJobs.length>0){
 			for(i=0;i<locals.defaultJobs.length;i++){
+				if(locals.defaultJobs[i].jobGUID!==undefined){
+
+
 				%>
 <a href="jobDescription?id=<%=locals.defaultJobs[i].jobGUID%>"><h3><%=locals.defaultJobs[i].jobTitle%></h3></a>
 
@@ -27,6 +30,7 @@ if(locals!==undefined){
      </div>
     <hr>
 				<%
+				}
 			}
 		}
 	}

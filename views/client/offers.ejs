@@ -85,24 +85,54 @@
 
                             <%
                               if(locals.proposals!==undefined){   
-                                                                                       
+                                
+                               var candidadeReturned=false;
+                               if(locals.candidadeUsers!==undefined){
+                                  candidadeReturned=true;
+                               }
+
                                 if(locals.proposals.length>=0){
                                   for(j=0;j<locals.proposals.length;j++){
-                                  console.log(locals.proposals[j].jobGUID+'  VS  '+locals.jobs[i].jobGUID);
+
+                                  var candidade=undefined;
+                                  if(candidadeReturned){
+                                      for(k=0;k<locals.candidadeUsers.length;k++){
+                                        if(locals.candidadeUsers[k].worker.userGUID===locals.proposals[j].candidadeGUID){
+                                          candidade=locals.candidadeUsers[k];
+                                        }
+                                      }
+                                  }
+
+
+
+                                  
                                     if(locals.proposals[j].jobGUID===locals.jobs[i].jobGUID){
                                       %>
                                         <div class="panel panel-default">
                                           <div class="panel-heading" role="tab" id="headingTwo">
                                             <h4 class="panel-title">
-                                              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                <%=locals.proposals[j].effDate%>   
-                                                <%=locals.proposals[j].candidadeGUID%>
+                                              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse<%=j%>" aria-expanded="false" aria-controls="collapse<%=j%>">
+                                                
+
+                                                <strong>   
+                                                <%=candidade.worker.fName%>
+                                                <%=candidade.worker.lName%>
+                                                </strong>
+                                                <%=locals.proposals[j].effDate%>
                                               </a>
                                             </h4>
                                           </div>
-                                          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                          <div id="collapse<%=j%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                             <div class="panel-body">
                                               <div class="form-group">
+
+                                                  View Profile of  
+                                                  <a href="workerProfile?id=<%=candidade.worker.userGUID%>" target="_blank"><%=candidade.worker.fName+' '+candidade.worker.lName%></a>
+
+                                                  <br>
+                                                  <br>
+                                                  <br>
+
                                                   cover letter
                                                   <p><%=locals.proposals[j].coverLetter%></p>
                                                   <br/>

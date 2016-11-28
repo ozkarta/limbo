@@ -1084,13 +1084,26 @@ myRouter=function(app,_passport,io,wss,store){
 
 
 
+
 				jobPost.findOne({'jobGUID':req.query.id},function(err,jobFound){
 					if(!err){
 						if(jobFound){
 							user.findOne({'client.userGUID':jobFound.ownerGUID},function(err1,ownerFound){
 								if(!err1){
 									if(ownerFound){
-										renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user}});
+										proposal.findOne({jobGUID:req.query.id,jobOwnerGUID:jobFound.ownerGUID,candidadeGUID:req.user.worker.userGUID},function(err2,proposalFound){
+											if(!err2){
+												if(proposalFound){
+													console.dir(proposalFound);
+													renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user,previousProposal:proposalFound}});
+												}else{
+													renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user}});
+												}
+											}else{
+												renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user}});
+											}
+										})
+										//renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,owner:ownerFound,user:req.user}});
 									}else{
 										renderIfAuthorized(req,res,app,'jobDescription',localPermition,{locals:{job:jobFound,user:req.user}});
 									}
@@ -1170,7 +1183,32 @@ myRouter=function(app,_passport,io,wss,store){
 							proposal.find({'jobOwnerGUID':req.user.client.userGUID},function(errProp,propArray){
 								if(!errProp){
 									if(propArray){
-										renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user}});
+										var candidateGUIDArray=[];
+										for(i=0;i<propArray.length;i++){
+											var myObjWorker={};
+											var myObjClient={};
+											myObjWorker['worker.userGUID']=propArray[i].candidadeGUID;
+											myObjClient['client.userGUID']=propArray[i].candidadeGUID;	
+
+											candidateGUIDArray.push(myObjWorker);									
+											candidateGUIDArray.push(myObjClient);
+										}
+										console.dir(candidateGUIDArray);
+
+										user.find({$or:candidateGUIDArray},function(errFindingUsers,foundUserArray){
+											if(!errFindingUsers){
+												if(foundUserArray){
+													console.dir(foundUserArray);
+													renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user,candidadeUsers:foundUserArray}});
+												}else{
+													renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user}});
+												}
+											}else{
+												renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user}});
+											}
+										})
+
+										//renderIfAuthorized(req,res,app,'offers',localPermition,{locals:{proposals:propArray,jobs:jobArray,user:req.user}});
 									}else{
 										res.redirect('/');
 									}

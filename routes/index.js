@@ -71,7 +71,7 @@ myRouter=function(app,_passport,io,wss,store){
 			    	var connectionJSON=JSON.parse(message);
 			    	//console.dir(connectionJSON);
 
-			    	var user=undefined;
+			    	var client=undefined;
 			    	// console.log('______________WORKER');
 			    	// console.log(ws.upgradeReq.session.mongoObject.worker.userGUID);
 			    	// console.log('______________CLIENT');
@@ -80,30 +80,78 @@ myRouter=function(app,_passport,io,wss,store){
 
 
 			    	if(ws.upgradeReq.session.mongoObject.client.userGUID!==undefined){
-			    		user=ws.upgradeReq.session.mongoObject.client;
+			    		client=ws.upgradeReq.session.mongoObject.client;
 			    	}
 			    	if(ws.upgradeReq.session.mongoObject.worker.userGUID!==undefined){
-			    		user=ws.upgradeReq.session.mongoObject.worker;
+			    		client=ws.upgradeReq.session.mongoObject.worker;
 			    	}
 
 			    	//console.dir(user);
-			    	var sender=user.userGUID;
+			    	var sender=client.userGUID;
 			    	if(connectionJSON!==undefined){
 			    		if(connectionJSON.action!==undefined){
 			    			if(connectionJSON.action=='messageTo'){
 			    				if(connectionJSON.receiver!==''){
 				    				newMessageHistory(messageHistory,sender,connectionJSON.to,function(result){
-				    					console.log('created');
+				    					
+				    					var userSearchArray=[];
+
+				    					for(i=0;i<result.length;i++){
+				    						var obj1={};
+				    						var obj2={};
+				    						obj1['client.userGUID']=result[i].leftUserGUID;
+				    						obj2['worker.userGUID']=result[i].rightUserGUID;
+				    						userSearchArray.push(obj1);
+				    						userSearchArray.push(obj2);
+				    					}
+
+				    					user.find({$or:userSearchArray},function(userSearchErr,foundList){
+				    						if(!userSearchErr){
+				    							if(foundList){
+				    								responseJSON={};
+				    								responseJSON.result=result;
+				    								responseJSON.userList=foundList;
+
+				    								ws.send(JSON.stringify(responseJSON));
+				    							}
+				    						}
+				    					})
+
+
 				    					//console.dir(result);
-				    					ws.send(JSON.stringify(result));
+				    					//ws.send(JSON.stringify(result));
 				    				});
 			    				}
 			    			}
 			    			if(connectionJSON.action=='getDefaultList'){
 			    				getMessagesDB(messageHistory,sender,function(result){
-			    					console.log('found');
 			    					//console.dir(result);
-			    					ws.send(JSON.stringify(result));
+			    					var userSearchArray=[];
+
+			    					for(i=0;i<result.length;i++){
+			    						var obj1={};
+			    						var obj2={};
+			    						obj1['client.userGUID']=result[i].leftUserGUID;
+			    						obj2['worker.userGUID']=result[i].rightUserGUID;
+			    						userSearchArray.push(obj1);
+			    						userSearchArray.push(obj2);
+			    					}
+			    					console.dir(userSearchArray);
+
+
+			    					user.find({$or:userSearchArray},function(userSearchErr,foundList){
+			    						if(!userSearchErr){
+			    							if(foundList){
+			    								responseJSON={};
+			    								responseJSON.result=result;
+			    								responseJSON.userList=foundList;
+
+			    								ws.send(JSON.stringify(responseJSON));
+			    							}
+			    						}
+			    					});
+
+			    					//ws.send(JSON.stringify(result));
 			    				});
 			    			}
 			    			if(connectionJSON.action=='newMessage'){
@@ -181,6 +229,12 @@ myRouter=function(app,_passport,io,wss,store){
 				    	  						}				    	  						
 				    	  					}
 				    	  					if(addOrNot){
+				    	  						userObject.userRole   =undefined;
+				    	  						userObject.passwordHistory   =undefined;
+				    	  						userObject.passwordResetGUID   =undefined;
+				    	  						userObject.email   =undefined;
+				    	  						userObject.authenticationMethod   =undefined;
+
 				    	  						connectedWSUsers.push({__id:ss.passport.user,userGUID:userObject.userGUID,type:type,user:userObject,ws:ws});
 				    	  					
 				    	  					}
@@ -237,7 +291,15 @@ myRouter=function(app,_passport,io,wss,store){
 				    	  						}				    	  						
 				    	  					}
 				    	  					if(addOrNot){
+				    	  						userObject.userRole   =undefined;
+				    	  						userObject.passwordHistory   =undefined;
+				    	  						userObject.passwordResetGUID   =undefined;
+				    	  						userObject.email   =undefined;
+				    	  						userObject.authenticationMethod   =undefined;
+				    	  						
+
 				    	  						connectedWSUsers.push({__id:ss.passport.user,userGUID:userObject.userGUID,type:type,user:userObject,ws:ws});
+				    	  						//console.dir(userObject);
 				    	  					
 				    	  					}
 

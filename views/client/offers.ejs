@@ -158,14 +158,119 @@
                                                   <input type="submit"  value="Send Message">
                                                 </div>
                                               </form>
+                                              <%
+                                                if(locals.proposals[j].status==='applied'){
 
-                                              <form action="confirmProposal">
+                                              %>
+                                              <form action="confirmProposal" method="POST">
+                                                <input type="hidden" name="proposal" value="<%=locals.proposals[j].proposalGUID%>">
                                                 <input type="hidden" name="candidade" value="<%=locals.proposals[j].candidadeGUID%>">
                                                 <div class="form-group">
                                                   <input type="submit"  value="Confirm Proposal">
                                                 </div>
                                               </form>
+
+                                              <form action="declineProposal" method="POST">
+                                                <input type="hidden" name="proposal" value="<%=locals.proposals[j].proposalGUID%>">
+                                                <input type="hidden" name="candidade" value="<%=locals.proposals[j].candidadeGUID%>">
+                                                <div class="form-group">
+                                                  <input type="submit"  value="Decline Proposal">
+                                                </div>
+                                              </form>
+
+                                              <%
+                                              }
+                                              %>
+
+                                              <%
+                                                if(locals.proposals[j].status==='declined'){
+
+                                              %>  
+                                                  <label class="form-control">Applicant was declined</label>
+                                              <%
+
+                                              }
+
+                                              %>
                                               
+
+
+
+                                              <%
+                                                if(locals.proposals[j].status==='accepted'){
+
+                                              %>
+                                                <label class="form-control">Applicant was accepted</label>
+                                              <%
+                                              }
+                                              %>
+                                              
+
+
+                                               <%
+                                               var feedbackLeft=false;
+                                               var feedback=undefined;
+                                               if(locals.feedbackArray!==undefined){
+                                                for(g=0;g<locals.feedbackArray.length;g++){
+                                                  if(locals.feedbackArray[g].for===locals.proposals[j].jobGUID && locals.feedbackArray[g].to===locals.proposals[j].candidadeGUID){
+                                                    feedbackLeft=true;
+                                                    feedback=locals.feedbackArray[g];
+                                                  }
+                                                }
+                                               }
+
+
+
+                                               //console.log('feedback array is ')
+                                               console.dir(locals.feedbackArray);
+                                                if(locals.proposals[j].status==='finished_stage1'){
+                                                     if(!feedbackLeft){
+
+                                              %>
+                                                <form action="leaveFeedback" method="POST">
+                                                  <input type="hidden" name="proposalGUID" value="<%=locals.proposals[j].proposalGUID%>">
+                                                  <input type="hidden" name="jobGUID" value="<%=locals.proposals[j].jobGUID%>">
+                                                  <input type="hidden" name="candidade" value="<%=locals.proposals[j].candidadeGUID%>">
+
+
+                                                  <label class="form-control">Leave Feedback</label>
+                                                  <select name="feedback" class="form-control">
+
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5" selected="">5</option>
+                                                  </select>
+
+                                                  <label class="form-control">Write your experience</label>
+                                                  <textarea name="feedbackText" class="form-control"></textarea>
+                                                  <div class="form-group">
+                                                    <input type="submit"  value="Submit Feedback">
+                                                  </div>
+                                                </form>
+                                              <%
+                                                 }else{
+
+                                                 }
+                                              }
+
+
+                                              if(feedbackLeft){
+                                                  %>  
+                                                      <div class="form-group">
+                                                      <br/>
+                                                      <br/>
+                                                      <br/>
+                                                          <h1 class="form-control">Your feedback to Worker</h1>
+                                                          <label class=""><%=feedback.feedbackText%></label>
+                                                          <br/>
+                                                          <br/>
+                                                          <label>Starts   <%=feedback.feedbackScore%></label>
+                                                      </div>
+                                                  <%
+                                              }
+                                              %>
 
                                             </div>
                                           </div>
@@ -226,6 +331,15 @@
         $(content).show();
         $(content).siblings('.tab-content').hide();
     });
+
+
+
+
+   
 });
+
+
+
+
 
 </script>

@@ -1,0 +1,290 @@
+<%
+console.dir(locals);
+%>
+
+
+<div class="container-fluid" >
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <h1>History</h1>
+      <div class="nav">
+        <div class="taboz">
+          <ul class="nav nav-pills nav-stacked">
+           
+            <li class="active"><a href="#proposals" >Proposals</a></li>
+            <li><a href="#active" >Active</a></li>
+            <li><a href="#finished" >Finished</a></li>    
+            <li><a href="#declined" >Declined</a></li>             
+            <li><a href="#feedback" >FeedBack</a></li>
+           
+          </ul><br>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="proposals" >
+       <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Send Date</th>
+                            <th>Job Title</th>                            
+                            <th>budget</th>
+                            <th>DeadLine</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            
+                        </tr>                        
+                    </thead>
+                    <tbody>
+      <%
+        if(locals!==undefined){
+          if(locals.proposals!==undefined){
+            for(i=0;i<locals.proposals.length;i++){
+              if(locals.jobs!==undefined){
+                  for(j=0;j<locals.jobs.length;j++){
+                      if(locals.jobs[j].jobGUID===locals.proposals[i].jobGUID && locals.proposals[i].status==='applied'){
+
+        %>
+
+  
+           
+                        <tr> 
+                            <td><%=locals.proposals[i].effDate%></td>
+                            <td><a href="jobDescription?id=<%=locals.jobs[j].jobGUID%>"><%=locals.jobs[j].jobTitle%></a></td>
+                            <td><%=locals.jobs[j].budget%></td>
+                            <td><%=locals.jobs[j].deadLine%></td>
+                            <td><%=locals.proposals[i].duration%></td>
+                            <td><%=locals.proposals[i].offeredPrice%></td>     
+                        </tr>
+                        
+                      
+        <%      
+                  }
+                }
+              }
+            }
+          }
+        }
+      %>
+                      </tbody>
+                </table>
+          </div>
+    </div>
+
+    <div class="col-sm-9 tab-content" id="active" >
+      <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Send Date</th>
+                            <th>Job Title</th>                            
+                            <th>budget</th>
+                            <th>DeadLine</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            
+                        </tr>                        
+                    </thead>
+                    <tbody>
+      <%
+        if(locals!==undefined){
+          if(locals.proposals!==undefined){
+            for(i=0;i<locals.proposals.length;i++){
+              if(locals.jobs!==undefined){
+                  for(j=0;j<locals.jobs.length;j++){
+                      if(locals.jobs[j].jobGUID===locals.proposals[i].jobGUID && locals.proposals[i].status==='accepted'){
+
+        %>
+
+  
+           
+                        <tr> 
+                             <td><%=locals.proposals[i].effDate%></td>
+                            <td><a href="jobDescription?id=<%=locals.jobs[j].jobGUID%>"><%=locals.jobs[j].jobTitle%></a></td>
+                            <td><%=locals.jobs[j].budget%></td>
+                            <td><%=locals.jobs[j].deadLine%></td>
+                            <td><%=locals.proposals[i].duration%></td>
+                            <td><%=locals.proposals[i].offeredPrice%></td>     
+                        </tr>
+                        
+                      
+        <%      
+                  }
+                }
+              }
+            }
+          }
+        }
+      %>
+                      </tbody>
+                </table>
+          </div>
+    
+    </div>
+
+     
+
+    <div class="col-sm-9 tab-content" id="finished" >
+      <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Send Date</th>
+                            <th>Job Title</th>                            
+                            <th>budget</th>
+                            <th>DeadLine</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            
+                        </tr>                        
+                    </thead>
+                    <tbody>
+      <%
+        if(locals!==undefined){
+          if(locals.proposals!==undefined){
+            for(i=0;i<locals.proposals.length;i++){
+              if(locals.jobs!==undefined){
+                  for(j=0;j<locals.jobs.length;j++){
+                      if(locals.jobs[j].jobGUID===locals.proposals[i].jobGUID && (locals.proposals[i].status==='finished_stage_1' || locals.proposals[i].status==='finished_stage_2') ){
+
+        %>
+
+  
+           
+                        <tr> 
+                            <td><%=locals.proposals[i].effDate%></td>
+                            <td><a href="jobDescription?id=<%=locals.jobs[j].jobGUID%>"><%=locals.jobs[j].jobTitle%></a></td>
+                            <td><%=locals.jobs[j].budget%></td>
+                            <td><%=locals.jobs[j].deadLine%></td>
+                            <td><%=locals.proposals[i].duration%></td>
+                            <td><%=locals.proposals[i].offeredPrice%></td>     
+                        </tr>
+                        
+                      
+        <%      
+                  }
+                }
+              }
+            }
+          }
+        }
+      %>
+                      </tbody>
+                </table>
+          </div>
+    </div>
+
+
+    <div class="col-sm-9 tab-content" id="declined" >
+      <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Send Date</th>
+                            <th>Job Title</th>                            
+                            <th>budget</th>
+                            <th>DeadLine</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            
+                        </tr>                        
+                    </thead>
+                    <tbody>
+      <%
+        if(locals!==undefined){
+          if(locals.proposals!==undefined){
+            for(i=0;i<locals.proposals.length;i++){
+              if(locals.jobs!==undefined){
+                  for(j=0;j<locals.jobs.length;j++){
+                      if(locals.jobs[j].jobGUID===locals.proposals[i].jobGUID && locals.proposals[i].status==='declined'){
+
+        %>
+
+  
+           
+                        <tr> 
+                            <td><%=locals.proposals[i].effDate%></td>
+                            <td><a href="jobDescription?id=<%=locals.jobs[j].jobGUID%>"><%=locals.jobs[j].jobTitle%></a></td>
+                            <td><%=locals.jobs[j].budget%></td>
+                            <td><%=locals.jobs[j].deadLine%></td>
+                            <td><%=locals.proposals[i].duration%></td>
+                            <td><%=locals.proposals[i].offeredPrice%></td>                            
+                        </tr>
+                        
+                      
+        <%      
+                  }
+                }
+              }
+            }
+          }
+        }
+      %>
+                      </tbody>
+                </table>
+          </div>
+    
+    </div>
+    
+
+    <div class="col-sm-9 tab-content" id="feedback" >
+      <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Rating Date</th>
+                            <th>Rating</th>                            
+                            <th>Job Name</th>
+                            <th>Feedback Text</th>
+                            
+                        </tr>                        
+                    </thead>
+                    <tbody>
+      <%
+        if(locals!==undefined){
+            if(locals.jobs!==undefined){
+              if(locals.feedback!==undefined){
+                for(i=0;i<locals.feedback.length;i++){
+                  for(j=0;j<locals.jobs.length;j++){
+                      if(locals.feedback[i].for===locals.jobs[j].jobGUID){
+                        %>
+                          <tr> 
+                            <td><%=locals.feedback[i].effDate%></td>
+                            <td><%=locals.feedback[i].feedbackScore%></td>
+                            <td><a href="jobDescription?id=<%=locals.jobs[j].jobGUID%>"><%=locals.jobs[j].jobTitle%></a></td>
+                            <td>"<%=locals.feedback[i].feedbackText%>"</td>
+                          </tr>
+                        <%
+                      }
+                  }
+                }
+              }
+            }
+        }
+      %>
+                      </tbody>
+                </table>
+          </div>
+    
+    </div>
+
+  </div>
+</div>
+
+    <script>
+ $(document).ready(function () {
+    $('.taboz ul li:first').addClass('active');
+    $('.tab-content:not(:first)').hide();
+    $('.taboz ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+    });
+});
+</script>
+
+

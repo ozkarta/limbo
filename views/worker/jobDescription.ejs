@@ -51,9 +51,9 @@
 					<hr>
 
 					<div class="product-price">Job  Budget : <%=locals.job.budget===undefined || locals.job.budget=='' ? "Not defined" : locals.job.budget  %></div>
-			</div>   
-        </div>
-	</div>
+		</div>   
+    </div>
+</div>
     <hr>
     <div class="row">
         <div class="col-md-12">
@@ -65,11 +65,14 @@
 						</li>
                         <%
                             if(locals.previousProposal!==undefined){
+                                if(locals.previousProposal.status==='applied' ){
                         %>
 						<li><a href="#service-two" data-toggle="tab">Change Proposal Terms</a>
                         
                         </li>
-                        <%}else{
+                        <%
+                            }
+                        }else{
                         %>
                         <li><a href="#service-three" data-toggle="tab">Apply for this job</a>
                         

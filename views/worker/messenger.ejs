@@ -47,9 +47,16 @@ var connection;
 						if(data.action==='updateMessage'){
 							appendMessage(data);
 						}else{
-							for(i=0;i<data.length;i++){
-							
-								createContact(data[i]);
+							for(i=0;i<data.result.length;i++){
+								var userList=data.userList;
+								// for(j=0;j<data.userList.length;j++){
+								// 	if(data.userList[j].worker.userGUID===data.result[i].leftUserGUID || data.userList[j].client.userGUID===data.result[i].leftUserGUID || data.userList[j].worker.userGUID===data.result[i].rightUserGUID || data.userList[j].client.userGUID===data.result[i].rightUserGUID){
+								// 		userList.push(data.userList[j]);
+								// 	}
+								// }
+								//console.log('users_______');
+								//console.dir(userList);
+								createContact(data.result[i],userList);
 								
 							
 							}
@@ -81,7 +88,7 @@ var connection;
 			
 	});
 
-function createContact(data){
+function createContact(data,users){
 	//console.dir(data);
 	console.log('creating contact');
 	console.dir(data);
@@ -98,12 +105,40 @@ function createContact(data){
 	//var receiverGUID=destGuid.replace(/-/g,'');
 	var receiverGUID=destGuid;
 
+	var senderUser;
+	var receiverUser;
+	console.dir(users);
+	for(h=0;h<users.length;h++){
+		if(users[h].worker.userGUID===receiverGUID){
+			receiverUser=users[h].worker;
+		}
+
+		if(users[h].client.userGUID===receiverGUID){
+			receiverUser=users[h].client;
+		}
+
+		if(users[h].worker.userGUID===senderGUID){
+			senderUser=users[h].worker;
+		}
+
+		if(users[h].client.userGUID===senderGUID){
+			senderUser=users[h].client;
+		}
+
+	}
+
+	// console.log('sender');
+	// console.dir(senderUser);
+	// console.log('receiver');
+	// console.dir(receiverUser);
+
+console.dir(data);
 
 
-	console.log('receiver');
-	console.log(destGuid);
-	console.log('sender');
-	console.log(senderGUID);
+	// console.log('receiver');
+	// console.log(destGuid);
+	// console.log('sender');
+	// console.log(senderGUID);
 
 	var li=document.createElement('li');
 	li.setAttribute('class','active bounceInDown');
@@ -121,19 +156,35 @@ function createContact(data){
 
 
 	var strong=document.createElement('strong');
-	strong.innerHTML=receiverGUID;
+
+	if(receiverUser!==undefined){
+		strong.innerHTML=(receiverUser.fName+' '+ receiverUser.lName);
+	}else{
+		strong.innerHTML='User Is Not in DataBase';
+	}
+	
 
 	var div2=document.createElement('div');
 	div2.setAttribute('class','last-message text-muted');
-	div2.innerHTML='this is the message body';
+	//div2.innerHTML='this is the message body';
 
 	var small1=document.createElement('small');
 	small1.setAttribute('class','time text-muted');
-	small1.innerHTML='Just now';
+	if(data.message!==undefined){
+		if(data.message.length>0){
+			small1.innerHTML=data.message[data.message.length-1].effDate;
+			//small1.innerHTML='NOW';
+		}else{
+			small1.innerHTML='';
+		}		
+	}else{
+		small1.innerHTML='';
+	}
+	
 
 	var small2=document.createElement('small');
 	small2.setAttribute('class','chat-alert label label-danger');
-	small2.innerHTML='1';
+	//small2.innerHTML='1';
 
 	a.appendChild(img);
 	div1.appendChild(strong);
@@ -145,14 +196,14 @@ function createContact(data){
 	
 	document.getElementById('contactList').appendChild(li);
 
-	createContactMessageLayout(receiverGUID,data);
+	createContactMessageLayout(receiverGUID,data,senderUser,receiverUser);
 }
 
-function createContactMessageLayout(receiverGUID,data){
+function createContactMessageLayout(receiverGUID,data,senderUser,receiverUser){
 	var mainDiv=document.createElement('div');
 	mainDiv.setAttribute('class','col-sm-9 tab-content bg-white');
 	mainDiv.setAttribute('id',receiverGUID);
-	mainDiv.innerHTML=receiverGUID;
+	//mainDiv.innerHTML=receiverGUID;
 
 	//__________________CHAT BOX
 	var chatBoxDiv=document.createElement('div');
@@ -190,7 +241,7 @@ function createContactMessageLayout(receiverGUID,data){
 	chatBoxDiv.appendChild(inputGroupDiv);
 
 
-	createMessageStructure(data,receiverGUID,mainDiv);
+	createMessageStructure(data,receiverGUID,mainDiv,senderUser,receiverUser);
 
 	mainDiv.appendChild(chatBoxDiv);
 	//______________________MESSAGEBOX APPENDS
@@ -212,7 +263,7 @@ function arrangeDisplay(){
 			    });
 }
 
-function createMessageStructure(data,receiverGUID,mainDiv){
+function createMessageStructure(data,receiverGUID,mainDiv,senderUser,receiverUser){
 	var sender=document.getElementById('sender').value;
 
 	var chatMessageDiv=document.createElement('div');
@@ -221,7 +272,7 @@ function createMessageStructure(data,receiverGUID,mainDiv){
 	var chatUL=document.createElement('ul');
 	chatUL.setAttribute('class','chat');
 	chatUL.setAttribute('id','UL_'+receiverGUID);
-
+	var name='';
 	for(j=0;j<data.message.length;j++){
 		var liClass='';
 		var spanClass='';
@@ -229,9 +280,13 @@ function createMessageStructure(data,receiverGUID,mainDiv){
 			if(data.message[j].senderGUID===sender){
 				liClass='right clearfix';
 				spanClass='chat-img pull-right';
+				name=senderUser.fName+' '+senderUser.lName;
 			}else{
 				liClass='left clearfix';
 				spanClass='chat-img pull-left';
+				if(receiverUser!==undefined){
+					name=receiverUser.fName+'  '+receiverUser.lName;
+				}
 			}
 		}
 
@@ -252,10 +307,11 @@ function createMessageStructure(data,receiverGUID,mainDiv){
 
 		var strong=document.createElement('strong');
 		strong.setAttribute('class','primary-font');
+		strong.innerHTML=name;
 
 		var small=document.createElement('small');
 		small.setAttribute('class','pull-right text-muted');
-		small.innerHTML=' 13 mins ago';
+		small.innerHTML=data.message[j].effDate;
 
 		var ii=document.createElement('i');
 		ii.setAttribute('class','fa fa-clock-o');
@@ -594,7 +650,7 @@ margin-left: -40px;
 
 .friend-list li a .time {
   position: absolute;
-  top: 10px;
+  top: 50px;
   right: 8px;
 }
 

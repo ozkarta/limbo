@@ -539,14 +539,20 @@ myRouter=function(app,_passport,io,wss,store){
 					})
 				}
 				if(req.user.worker.userGUID!==undefined){
-					jobPost.find({},function(err,jobsResult){
-						if(!err){
-							if(jobsResult){
-								renderIfAuthorized(req,res,app,'index',localPermition,{locals:{defaultJobs:jobsResult}});
-							}
-						}
-					})
 
+					console.dir(req.query);
+
+					var searchQuery={};
+
+					// jobPost.find({},function(err,jobsResult){
+					// 	if(!err){
+					// 		if(jobsResult){
+					// 			renderIfAuthorized(req,res,app,'index',localPermition,{locals:{defaultJobs:jobsResult}});
+					// 		}
+					// 	}
+					// })
+
+					renderIfAuthorized(req,res,app,'index',localPermition,{locals:{}});
 					
 				}
 			}else{
@@ -554,6 +560,220 @@ myRouter=function(app,_passport,io,wss,store){
 			}
 			//res.render('visitor/index');
 		})
+
+
+		this.router.post('/getSearchResultForWorker',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+			console.dir(req.body)
+			//res.render('visitor/signUpQueue');
+			var result=undefined;
+			var searchQuery={};
+			var queryArray=[{}];
+			var keyWordLikeRegExps=undefined;
+			if(req.body.jobSearch || req.body.who || req.body.category || req.body.subCategory || req.body.keyWords ){
+				searchQuery.$or=[];
+			
+			if(req.body.keyWords.trim()){
+							     keyWordLikeRegExps=[   new RegExp('^.* '+req.body.keyWords.trim()+' .*$','gi'),
+									   new RegExp('^'+req.body.keyWords.trim()+' .*$','gi'),
+									   new RegExp('^.* '+req.body.keyWords.trim()+'$','gi'),
+									   new RegExp('^'+req.body.keyWords.trim()+'.*$','gi'),
+									   new RegExp('^.*'+req.body.keyWords.trim()+'$','gi'),
+									   new RegExp('^.*'+req.body.keyWords.trim()+'.*$','gi')
+																	];
+							console.dir(keyWordLikeRegExps);
+						}
+
+				if(req.body.category){
+					if(req.body.subCategory){
+						if(req.body.keyWords.trim()){
+							// Level 1
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category},
+															{jobSubCategoryGUID:req.body.subCategory},
+															{jobTitle:
+																	{$in:keyWordLikeRegExps }
+															}
+														  ]});
+							// Level 2
+
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category},
+															{jobTitle:
+																	{$in:keyWordLikeRegExps }
+															}
+														  ]});
+
+							
+							// Level 3
+
+
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category},
+															{jobSubCategoryGUID:req.body.subCategory}
+														  ]});
+
+							
+							// Level 4
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category}
+														  ]});
+							// Level 5
+							(searchQuery.$or).push({$and:[															
+															{jobTitle:
+																	{$in:keyWordLikeRegExps }
+															}
+														  ]});
+						}else{
+							// Level 2
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category},
+															{jobSubCategoryGUID:req.body.subCategory}
+														  ]});
+							// Level 3
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category}
+														  ]});
+
+						}
+						
+					}else{
+							
+							if(req.body.keyWords.trim()){
+								// Level 2
+								(searchQuery.$or).push({$and:[
+																{jobCategoryGUID:req.body.category},
+																{jobTitle:
+																		{$in:keyWordLikeRegExps }
+																}
+															  ]});
+							}
+
+							// Level 3
+							(searchQuery.$or).push({$and:[
+															{jobCategoryGUID:req.body.category}
+														  ]});
+							if(req.body.keyWords.trim()){
+								// Level 5
+								(searchQuery.$or).push({$and:[															
+																{jobTitle:
+																		{$in:keyWordLikeRegExps }
+																}
+															  ]});
+							}
+
+					}
+				}else{
+					if(req.body.keyWords.trim()){
+						// Level 5
+							(searchQuery.$or).push({$and:[															
+															{jobTitle:
+																	{$in:keyWordLikeRegExps }
+															}
+														  ]});
+					}else{
+						(searchQuery.$or).push({$and:[															
+															{
+															}
+														  ]});
+					}
+				}
+				
+
+			}
+			
+
+			//console.dir(JSON.stringify(searchQuery));
+
+			console.log('______________________________________________');
+			if(searchQuery.$or){
+				queryArray=searchQuery.$or;
+
+				
+				 for(var g=0;g<queryArray.length;g++){
+				 	 console.dir(JSON.stringify(queryArray[g]));
+				 }
+			}
+			
+
+
+
+			// searchQuery.$or.push({});
+			// searchQuery.$or.push({});
+			// searchQuery.$or.push({});
+						
+
+
+			if(req.isAuthenticated()){
+				//          OLD VERSION
+					// jobPost.find(searchQuery,function(err,jobsResult){		
+					// 				result=jobsResult;
+
+					// 				res.send({result:{
+					// 						status:'authenticated',
+					// 						data:result
+					// 						}
+					// 				});			
+					// });
+				//___________________________________________________________
+
+				cyncronisedExecuteFindQuery(jobPost,queryArray,0,[],function(cap){
+					result=cap;
+
+									res.send({result:{
+											status:'authenticated',
+											data:result
+											}
+									});			
+				})
+
+
+
+			}else{
+				res.send({result:{
+								status:'not authenticated'
+								}
+						});
+			}
+
+
+
+		});
+	
+		
+
+
+		this.router.post('/getCategoryList',function(req,res,next){	
+			var localPermition=new permition();
+			localPermition.visitor=false;
+			localPermition.client=false;
+			localPermition.worker=true;
+
+			if(req.isAuthenticated()){
+
+				jobCategory.find({},function(err,result){
+					if(!err){
+						if(result){
+							res.send({result:{
+										status:'authenticated',
+										data:result
+								}});
+						}
+					}
+				});
+
+			};
+
+		});
+
+
+
+
+
 
 		this.router.get('/signUp',function(req,res,next){	
 			var localPermition=new permition();
@@ -1558,6 +1778,33 @@ myRouter=function(app,_passport,io,wss,store){
 		});
 
 }
+
+
+function cyncronisedExecuteFindQuery(finder,queryArray,index,capacitor,callback){
+
+			console.log('logging index '+index);
+			if(index<queryArray.length){
+				finder.find(queryArray[index],function(err,result){
+					if(!err){
+						//console.dir(queryArray[index]);
+						console.log( ' was executed succesfully');
+						capacitor=capacitor.concat(result);
+						index++;
+
+						console.log('calling next tick');
+						cyncronisedExecuteFindQuery(finder,queryArray,index,capacitor,callback);
+					}else{
+						//console.log('error');
+						index++;
+						cyncronisedExecuteFindQuery(finder,queryArray,index,capacitor,callback);
+					}	
+				});
+			}else{
+				callback(capacitor);
+			}
+}
+
+
 function renderIfAuthorized(req,res,app,view,permition,locals){
 	//console.dir(locals);
 	

@@ -4,7 +4,7 @@ module.exports=function(){
 
 	initTranslator();
 
-	initJobCategory();
+	//initJobCategory();
 
 }
 

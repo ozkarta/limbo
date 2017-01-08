@@ -6,7 +6,9 @@ module.exports=mongoose.model('jobpost',{
 	effDate			:String,
 
 	ownerGUID		:String,
-	jobCategory		:String,
+	jobCategoryGUID		:String,
+	jobSubCategoryGUID  :String,
+
 	jobTitle		:String,
 	jobDescription	:String,
 	deadLine		:String,

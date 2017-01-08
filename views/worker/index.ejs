@@ -1,15 +1,89 @@
-<div style="display: inline-block;">
 
-	<div class="container" style="padding-left:10px;width:20%" >
+
+<!-- This is Search system -->
+<!-- <div style="display: inline-block;">
+
+	<div class="container" style="padding-left:0px;width:20%" >
 		<div class="row">
 			<div class="col-md-12">
-	            <div class="input-group" id="adv-search">
-	                <input type="text" class="form-control" placeholder="Search for snippets" />
-	                <div class="input-group-btn">
-	                    <div class="btn-group" role="group">
-	                        <div class="dropdown dropdown-lg">
-	                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-	                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+
+
+			<form action="/" method="GET">
+				
+			
+	            <div class="input-group" id="adv-search" style="display: inline-block">
+	                
+		            <div style="display: flex">
+		                <input type="text" class="form-control" placeholder="Search for snippets" name="jobSearch"/>
+		                <div class="input-group-btn">
+
+		                    <div class="btn-group" role="group">
+		                        
+		                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+		                    </div>
+		                 </div>
+		            </div>
+
+	                 
+	                    <div class="form-group" >
+	                        <label for="filter">What are you looking for</label>
+	                        <select class="form-control" name="who">
+	                            <option value="0" selected>Job</option>
+	                            <option value="1">Client</option>  
+	                            <option value="2">worker</option>   
+	                            <option value="3">worker</option> 
+	                            <option value="4">other...</option> 
+	                        </select>
+	                    </div>
+	                    <div class="form-group" >
+	                        <label for="filter">Category</label>
+	                        <select class="form-control" name="category" onchange="categorySelected(this)">	
+	                        	<option value="" >Choose Category</option>
+	                        	<option value="" >Cat 2</option>
+	                        	<option value="" >Cat 3</option>
+	                        	<option value="" >Cat 4</option>
+	                        	<option value="" >Cat 5</option>
+	                        </select>
+	                    </div>
+
+
+	                    <div class="form-group" >
+	                        <label for="filter">Sub Category</label>
+	                        <select class="form-control" name="category" id="subCategoryID">
+	                        
+	                        </select>
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="contain">KeyWords</label>
+	                        <input class="form-control" type="text" name="keywords"/>
+	                    </div>
+
+
+	               
+
+
+	            </div>
+	        </form>
+
+	            <div>
+	            <center>
+	            	<h1>Recent Searches</h1>
+	            </center>
+	            	<a href="">Search 1</a>
+	            	<a href="">Search 2</a>
+	            	<a href="">Search 3</a>
+	            	<a href="">Search 4</a>
+	            	<a href="">Search 5</a>
+	            </div>
+	            
+
+	          </div>
+	        </div>
+	</div>
+</div> -->
+
+
+<!-- <div class="dropdown-menu dropdown-menu-right" role="menu">
 	                                <form class="form-horizontal" role="form">
 	                                  <div class="form-group">
 	                                    <label for="filter">What are you looking for</label>
@@ -37,33 +111,14 @@
 	                                  </div>
 	                                  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 	                                </form>
-	                            </div>
-	                        </div>
-	                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-	                    </div>
-	                </div>
+	                            </div> -->
 
 
-	            </div>
 
-	            <div>
-	            <center>
-	            	<h1>Recent Searches</h1>
-	            </center>
-	            	<a href="">Search 1</a>
-	            	<a href="">Search 2</a>
-	            	<a href="">Search 3</a>
-	            	<a href="">Search 4</a>
-	            	<a href="">Search 5</a>
-	            </div>
-	            
+<!--This is main  DIV HTML  and it's going to be generated with JS-->
 
-	          </div>
-	        </div>
-	</div>
-</div>
-
-<div class="container" style="padding-left:20%">
+<!-- 
+<div class="container1" style="float:right;width:65%;">
 	<div class="col-md-12">
 
 
@@ -107,7 +162,11 @@
 
 
 	</div>
-</div>
+</div> -->
+
+
+
+
 
 
 
@@ -147,6 +206,18 @@
     <hr>
 </div>
 </div> -->
+
+<div id="searchPanel" style="display: inline-block;">
+	
+</div>
+
+<div id="mainLayout" style="float:right;width:65%;">
+	
+</div>
+
+
+
+
 
 
 <style>
@@ -197,3 +268,433 @@ body {
 
 
 </style>
+
+<script>
+	function categorySelected(ev){
+		// //console.dir(categoryList);
+		// clearSubCategory();
+		// createSubCategory(ev.value);
+		// //console.dir(ev);
+
+		if(ev.value===''){
+			clearSubCategory();
+		}else{
+			clearSubCategory();
+			createSubCategory(ev.value);
+		}
+
+
+
+	}
+	function clearSubCategory(){
+		var subCategoryDivMy=document.getElementById('subCategoryDiv');
+		//console.dir(subCategoryDivMy);
+		for(var p=subCategoryDivMy.childNodes.length-1;p>=0;p--){
+			//console.dir(subCategoryDivMy.childNodes[p]);
+			subCategoryDivMy.removeChild(subCategoryDivMy.childNodes[p]);
+		}
+	}
+
+	function createSubCategory(categoryGUID){
+		//alert('create sub category');
+
+		var subCategoryDiv=document.getElementById('subCategoryDiv');
+
+		var subCategoryLabel=document.createElement('label');
+							subCategoryLabel.setAttribute('for','filter');
+							subCategoryLabel.innerHTML="Select Category";
+						var subCategorySelect=document.createElement('select');
+							subCategorySelect.setAttribute('class','form-control');
+							subCategorySelect.setAttribute('name','subCategory');
+							subCategorySelect.setAttribute('id','subCategory');
+							//subCategorySelect.setAttribute('onchange','categorySelected(this)');
+
+							var defaultCategoryObject=document.createElement('option');
+								defaultCategoryObject.setAttribute('value','');
+								//defaultCategoryObject.setAttribute('selected','true');
+								defaultCategoryObject.innerHTML="Choose Sub Category";
+								subCategorySelect.appendChild(defaultCategoryObject);
+
+							// for(var k=0;k<categoryList.length;k++){
+							// 	var obj=document.createElement('option');
+							// 		obj.setAttribute('value',categoryList[k].categoryValue);									
+							// 		obj.innerHTML=categoryList[k].categoryName;
+							// 		if(categoryList[k].selected){
+							// 			obj.setAttribute('selected','true');
+							// 		}
+							// 	subCategorySelect.appendChild(obj);
+							// }
+							//console.dir(categoryList);
+
+
+
+							for(var i=0;i<categoryList.length;i++){
+								if(categoryList[i].categoryValue===categoryGUID){
+									//console.log('daemtxvaa');
+									//console.dir(categoryList[i].subCategory);
+
+
+									for(var j=0;j<categoryList[i].subCategory.length;j++){
+
+											var obj=document.createElement('option');
+												obj.setAttribute('value',categoryList[i].subCategory[j].categoryGUID);									
+												obj.innerHTML=categoryList[i].subCategory[j].categoryVarName;
+												if(categoryList[i].subCategory[j].selected){
+													obj.setAttribute('selected','true');
+												}
+											subCategorySelect.appendChild(obj);
+									}
+								}
+							}
+
+
+						subCategoryDiv.appendChild(subCategoryLabel);
+						subCategoryDiv.appendChild(subCategorySelect);
+	}
+
+
+	$(document).ready(function() {
+
+		console.dir('Document is ready,   requesting data...')
+
+			$.post('getCategoryList',
+					{},
+					function(d,status){
+						//console.dir(d.result);
+						if(d){
+							console.dir(d);
+							createSearchSystem(d.result.data);
+							
+						}
+						
+
+					}
+			);
+
+		
+
+			$.post('getSearchResultForWorker',
+					{},
+					function(d,status){
+						//console.dir(d.result);
+						if(d){
+							//createSearchSystem();
+							createJobLayer();
+
+
+							for(var i=0;i<d.result.data.length;i++){
+								appendJob(d.result.data[i]);
+							}
+						}
+						
+
+					}
+			);
+
+	});
+
+
+	function appendJob(jobData){
+		//console.dir(jobData);
+		var mainDiv=document.createElement('div');
+
+		//  Create Name Link  for job
+		var nameLink=document.createElement('a');
+			nameLink.setAttribute('href','jobDescription?id='+jobData.jobGUID);
+		var nameLinkText=document.createElement('h3');
+			nameLinkText.innerHTML=jobData.jobTitle;
+
+		nameLink.appendChild(nameLinkText);
+		//document.getElementById('addLayer').appendChild(nameLink);
+		mainDiv.appendChild(nameLink);
+
+
+		//  Create Job Description
+
+		var description=document.createElement('p');
+			description.innerHTML=jobData.jobDescription;
+		//document.getElementById('addLayer').appendChild(description);
+		mainDiv.appendChild(description);
+
+		//  Create Other view
+		var otherDiv=document.createElement('div');
+
+		var dateTimeSpan=document.createElement('span');
+			dateTimeSpan.setAttribute('class','badge');
+			dateTimeSpan.innerHTML='Posted '+jobData.effDate;
+
+		otherDiv.appendChild(dateTimeSpan);
+		//document.getElementById('addLayer').appendChild(otherDiv);
+		mainDiv.appendChild(otherDiv);
+		document.getElementById('addLayer').appendChild(mainDiv);
+
+
+
+	}
+
+	function createJobLayer(){
+		var divContainer=document.createElement('div');
+			divContainer.setAttribute('class','container1');
+			//divContainer.setAttribute('style','float:right;width:65%;');
+
+		var divColMD12=document.createElement('div');
+			divColMD12.setAttribute('class','col-md-12');
+			divColMD12.setAttribute('id','addLayer');
+
+			divContainer.appendChild(divColMD12);
+
+			document.getElementById('mainLayout').appendChild(divContainer);
+
+	}
+
+	function clearJobLayer(){
+		var divToClear=document.getElementById('addLayer');
+
+
+		for(var i=divToClear.childNodes.length-1;i>=0;i--){
+			divToClear.removeChild(divToClear.childNodes[i]);
+		}
+
+		//console.dir(divToClear);
+
+	}
+
+
+	function createSearchSystem(data){
+
+
+	 var whoList=[{selected:false,name:'Job',value:'Job'},{selected:false,name:'Client',value:'Client'},{selected:false,name:'Worker',value:'Worker'},{selected:false,name:'Other',value:'Other'}];
+
+	 // var categoryList=[{categoryName:'IT',categoryValue:'it',selected:false},{categoryName:'Auto',categoryValue:'auto',selected:false},{categoryName:'Shipping',categoryValue:'shipping',selected:false}];
+
+	categoryList=[];
+	for(var i=0;i<data.length;i++){
+		console.log(data[i].categoryVarName);
+		categoryList.push({selected:false,categoryName:data[i].categoryVarName,categoryValue:data[i].categoryGUID,subCategory:data[i].subCategory});
+	}
+
+
+		var mainSearchPanelDiv=document.createElement('div');
+			//mainSearchPanelDiv.setAttribute('style','display: inline-block;')
+
+		var mainSearchPanelContainer=document.createElement('div');
+			mainSearchPanelContainer.setAttribute('style','padding-left:0px;width:20%');
+			mainSearchPanelContainer.setAttribute('class','container');
+
+		var row=document.createElement('div');
+			row.setAttribute('class','row');
+
+		var colMD12=document.createElement('div');
+			colMD12.setAttribute('class','col-md-12');
+
+
+
+		//  Search Panel
+
+		var searchForm=document.createElement('form');
+			searchForm.setAttribute('action','/');
+			searchForm.setAttribute('method','GET');
+			searchForm.setAttribute('id','searchForm');
+
+			var inputGroup=document.createElement('div');
+				inputGroup.setAttribute('class','input-group');
+				inputGroup.setAttribute('id','adv-search');
+				inputGroup.setAttribute('style','display: inline-block');
+
+				var div1,div2,div3,div4,div5;
+
+					div1=document.createElement('div');
+						div1.setAttribute('style','display: flex');
+						var searchBox=document.createElement('input');
+							searchBox.setAttribute('type','text');
+							searchBox.setAttribute('class','form-control');
+							searchBox.setAttribute('placeholder','Search For Jobs');
+							searchBox.setAttribute('name','jobSearch');
+							searchBox.setAttribute('id','jobSearch');
+
+						div1.appendChild(searchBox);
+							var innerDiv1=document.createElement('div');
+								innerDiv1.setAttribute('class','input-group-btn');
+
+									var innerDiv2=document.createElement('div');
+										innerDiv2.setAttribute('class','btn-group');
+										innerDiv2.setAttribute('role','group');
+											var searchButton=document.createElement('button');
+												searchButton.setAttribute('type','submit');
+												searchButton.setAttribute('class','btn btn-primary');
+												searchButton.setAttribute('onclick','return searchResult(this)');
+												var searchButtonSpan=document.createElement('span');
+													searchButtonSpan.setAttribute('class','glyphicon glyphicon-search');
+													searchButtonSpan.setAttribute('aria-hidden','true');
+
+						searchButton.appendChild(searchButtonSpan);
+						innerDiv2.appendChild(searchButton);
+						innerDiv1.appendChild(innerDiv2);
+
+						div1.appendChild(innerDiv1);
+
+					div2=document.createElement('div');
+						div2.setAttribute('class','form-group');
+						var div2Label=document.createElement('label');
+							div2Label.setAttribute('for','filter');
+							div2Label.innerHTML="What are you looking for?";
+						var div2Select=document.createElement('select');
+							div2Select.setAttribute('class','form-control');
+							div2Select.setAttribute('name','who');
+							div2Select.setAttribute('id','who');
+
+
+							// var defaultObject=document.createElement('option');
+							// 	defaultObject.setAttribute('value','');
+							// 	//defaultObject.setAttribute('selected','true');
+							// 	defaultObject.innerHTML="Choose Category";
+							// 	div2Select.appendChild(defaultObject);
+
+							for(var k=0;k<whoList.length;k++){
+								var obj=document.createElement('option');
+									obj.setAttribute('value',whoList[k].value);									
+									obj.innerHTML=whoList[k].name;
+									if(whoList[k].selected){
+										obj.setAttribute('selected','true');
+									}
+								div2Select.appendChild(obj);
+							}
+						div2.appendChild(div2Label);
+						div2.appendChild(div2Select);
+
+
+
+					div3=document.createElement('div');
+						div3.setAttribute('class','form-group');
+
+						div3.setAttribute('class','form-group');
+						var div3Label=document.createElement('label');
+							div3Label.setAttribute('for','filter');
+							div3Label.innerHTML="Select Category";
+						var div3Select=document.createElement('select');
+							div3Select.setAttribute('class','form-control');
+							div3Select.setAttribute('name','category');
+							div3Select.setAttribute('id','category');
+							div3Select.setAttribute('onchange','categorySelected(this)');
+
+							var defaultCategoryObject=document.createElement('option');
+								defaultCategoryObject.setAttribute('value','');
+								//defaultCategoryObject.setAttribute('selected','true');
+								defaultCategoryObject.innerHTML="Choose Category";
+								div3Select.appendChild(defaultCategoryObject);
+
+							for(var k=0;k<categoryList.length;k++){
+								var obj=document.createElement('option');
+									obj.setAttribute('value',categoryList[k].categoryValue);									
+									obj.innerHTML=categoryList[k].categoryName;
+									if(categoryList[k].selected){
+										obj.setAttribute('selected','true');
+									}
+								div3Select.appendChild(obj);
+							}
+						div3.appendChild(div3Label);
+						div3.appendChild(div3Select);
+
+
+					div4=document.createElement('div');
+						div4.setAttribute('class','form-group');
+						div4.setAttribute('id','subCategoryDiv');
+
+
+					div5=document.createElement('div');
+						div5.setAttribute('class','form-group');
+						var div5Label=document.createElement('div');
+							div5Label.setAttribute('for','contain');
+							div5Label.innerHTML='KeyWords';
+
+						var div5Input=document.createElement('input');
+							div5Input.setAttribute('class','form-control');
+							div5Input.setAttribute('type','text');
+							div5Input.setAttribute('name','keywords');
+							div5Input.setAttribute('id','keywords');
+						div5.appendChild(div5Label);
+						div5.appendChild(div5Input);
+
+				inputGroup.appendChild(div1);
+				//inputGroup.appendChild(div2);
+				inputGroup.appendChild(div3);
+				inputGroup.appendChild(div4);
+				inputGroup.appendChild(div5);
+
+
+		//  Search History
+
+		var searchHistory=document.createElement('div');
+			var center=document.createElement('center');
+				var recentSearchText=document.createElement('h1');
+					recentSearchText.innerHTML='Recent Searches';
+
+			var historyComponentDiv=document.createElement('div');
+				historyComponentDiv.setAttribute('id','searchHistory');
+
+			center.appendChild(recentSearchText);
+			searchHistory.appendChild(center);
+			searchHistory.appendChild(historyComponentDiv);
+
+
+			searchForm.appendChild(inputGroup);
+			colMD12.appendChild(searchForm);
+			colMD12.appendChild(searchHistory);
+
+			row.appendChild(colMD12);
+
+			mainSearchPanelContainer.appendChild(row);
+			mainSearchPanelDiv.appendChild(mainSearchPanelContainer);
+
+			document.getElementById('searchPanel').appendChild(mainSearchPanelDiv);
+	}
+
+	function searchResult(ev){
+		var resultJSON={};
+			if(document.getElementById('jobSearch')){
+				resultJSON.searchWord=document.getElementById('jobSearch').value;
+			}
+			if(document.getElementById('who')){
+				resultJSON.searchFor=document.getElementById('who').value;
+			}
+			if(document.getElementById('category')){
+				resultJSON.category=document.getElementById('category').value;
+			}
+			if(document.getElementById('subCategory')){
+				//console.dir(document.getElementById('subCategory'));
+				resultJSON.subCategory=document.getElementById('subCategory').value;
+			}
+			if(document.getElementById('keywords')){
+				resultJSON.keyWords=document.getElementById('keywords').value;
+			}
+			
+
+
+		console.dir(resultJSON);
+
+		$.post('getSearchResultForWorker',
+				resultJSON,
+				function(d,status){
+					//console.dir(d.result);
+					if(d){
+						//createSearchSystem();
+						//createJobLayer();
+
+						clearJobLayer();
+
+
+						for(var i=0;i<d.result.data.length;i++){
+							appendJob(d.result.data[i]);
+						}
+					}
+					
+
+				}
+		);
+
+
+		return false;
+	}
+
+
+</script>

@@ -270,6 +270,42 @@ body {
 </style>
 
 <script>
+
+
+currentPage=0;
+maxPostQuant=10;
+
+$(window).scroll(function(){
+    if ($(window).scrollTop() == $(document).height()-$(window).height()){
+
+
+       if(resultJSON){
+       		resultJSON.currentPage=resultJSON.currentPage+1;
+       }
+
+       $.post('getSearchResultForWorker',
+				resultJSON,
+				function(d,status){
+					//console.dir(d.result);
+					if(d){
+						//createSearchSystem();
+						//createJobLayer();
+
+						//clearJobLayer();
+						console.dir(d);
+
+						for(var i=0;i<d.result.data.length;i++){
+							appendJob(d.result.data[i]);
+						}
+					}
+					
+
+				}
+		);
+    }
+});
+
+
 	function categorySelected(ev){
 		// //console.dir(categoryList);
 		// clearSubCategory();
@@ -286,6 +322,8 @@ body {
 
 
 	}
+
+
 	function clearSubCategory(){
 		var subCategoryDivMy=document.getElementById('subCategoryDiv');
 		//console.dir(subCategoryDivMy);
@@ -354,11 +392,15 @@ body {
 
 
 	$(document).ready(function() {
+		resultJSON={};
+		resultJSON.currentPage=currentPage;
+		resultJSON.maxPostQuant=maxPostQuant;	
+		console.log('sending ...');
+		console.dir(resultJSON);
 
-		console.dir('Document is ready,   requesting data...')
 
 			$.post('getCategoryList',
-					{},
+					resultJSON,
 					function(d,status){
 						//console.dir(d.result);
 						if(d){
@@ -374,7 +416,7 @@ body {
 		
 
 			$.post('getSearchResultForWorker',
-					{},
+					resultJSON,
 					function(d,status){
 						//console.dir(d.result);
 						if(d){
@@ -650,7 +692,12 @@ body {
 	}
 
 	function searchResult(ev){
-		var resultJSON={};
+
+			resultJSON={};
+		 	resultJSON.currentPage=currentPage;
+			resultJSON.maxPostQuant=maxPostQuant;
+
+
 			if(document.getElementById('jobSearch')){
 				resultJSON.searchWord=document.getElementById('jobSearch').value;
 			}
@@ -667,7 +714,7 @@ body {
 			if(document.getElementById('keywords')){
 				resultJSON.keyWords=document.getElementById('keywords').value;
 			}
-			
+		
 
 
 		console.dir(resultJSON);

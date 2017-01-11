@@ -574,6 +574,21 @@ myRouter=function(app,_passport,io,wss,store){
 			var searchQuery={};
 			var queryArray=[{}];
 			var keyWordLikeRegExps=undefined;
+
+			var maxPostQuant=10;
+			var currentPage=0;
+
+			console.log('client response is ....');
+			console.dir(req.body);
+
+			if(req.body.maxPostQuant){
+				maxPostQuant=parseInt(req.body.maxPostQuant);
+			}
+			if(req.body.currentPage){
+				currentPage=parseInt(req.body.currentPage);
+			}
+
+
 			if(req.body.jobSearch || req.body.who || req.body.category || req.body.subCategory || req.body.keyWords ){
 				searchQuery.$or=[];
 			
@@ -722,8 +737,18 @@ myRouter=function(app,_passport,io,wss,store){
 				//___________________________________________________________
 
 				cyncronisedExecuteFindQuery(jobPost,queryArray,0,[],function(cap){
-					result=cap;
+					//result=cap;
+					if(cap){
+						result=[];
 
+						for(var h=currentPage*maxPostQuant;h<(currentPage+1)*maxPostQuant;h++){
+							if(h<cap.length){
+								result.push(cap[h]);
+							}else{
+								break;
+							}							
+						}
+					}
 									res.send({result:{
 											status:'authenticated',
 											data:result

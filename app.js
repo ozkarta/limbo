@@ -114,6 +114,11 @@ app.use(function(err, req, res, next) {
 
 
 
+if(1){
+  //console.dir(MONGODB_URI);
+}else{
+  console.dir(dbConfig.url);
+}
 
 
 //app.set('layout','layouts/layoutMainPage.ejs');

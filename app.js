@@ -16,14 +16,14 @@ var passport = require('passport');
 var expressSession = require('express-session');
 
 var RedisStore = require('connect-redis')(expressSession);
-var store=new RedisStore({
-    host: 'localhost',
-    port: 6379,
-    db: 2,
-    pass: 'RedisPASS'
-  })
+// var store=new RedisStore({
+//     host: 'localhost',
+//     port: 6379,
+//     db: 2,
+//     pass: 'RedisPASS'
+//   })
 
-//var store  = new expressSession.MemoryStore;
+var store  = new expressSession.MemoryStore;
 
 
 

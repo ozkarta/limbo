@@ -29,7 +29,7 @@ var dbUrl=process.env.MONGODB_URI || dbConfig.url;
 console.dir(dbUrl);
 
 
-mongoose.connect(dbConfig.url,function(err){
+mongoose.connect(dbUrl,function(err){
 	if(!err){
 		console.log('connected to mongo');
 		new dbInit();

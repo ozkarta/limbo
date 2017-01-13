@@ -37,6 +37,7 @@ mongoose.connect(dbUrl,function(err){
 		new dbInit();
 	}else{
 		console.dir(err);
+		console.log(dbUrl);
 	}	
 });
 

@@ -25,13 +25,15 @@ var cookieParser = require('cookie-parser')
 var url = require('url');
 
 
+
 var dbUrl=process.env.MONGODB_URI || dbConfig.url;
-console.dir(dbUrl);
+//console.dir(dbUrl);
 
 
 mongoose.connect(dbUrl,function(err){
 	if(!err){
 		console.log('connected to mongo');
+		console.log(dbUrl);
 		new dbInit();
 	}else{
 		console.dir(err);
